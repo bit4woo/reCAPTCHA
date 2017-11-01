@@ -13,7 +13,7 @@
 
 1. 通过burp代理访问目标网站的登录界面。
 
-2. 在proxy中找到获取图形验证码的请求，选中它并点击右键选择“Send to reCAPTCHA”，这个请求的信息将被发送到reCAPTCHA。![Send to](doc/Send to.png)
+2. 在proxy中找到获取图形验证码的请求，选中它并点击右键选择“Send to reCAPTCHA”，这个请求的信息将被发送到reCAPTCHA。![Send to](doc/Send_to.png)
 
 3. 切换到reCAPTCHA标签，并配置所需的参数。当参数配置好后，你可以点击“请求”按钮来测试配置。
 

@@ -3,6 +3,7 @@ package custom;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,8 +39,8 @@ public class myYunSu {
         String softkey = paraMap.get("softkey");
         String typeid =  paraMap.get("typeid");
         
-        String username = paraMap.get("username");//"komi_long";
-        String password = paraMap.get("password");//"komi2016";
+        String username = paraMap.get("username");
+        String password = paraMap.get("password");
         File img = new File(imagePath);
         if(img.exists())
         {
@@ -48,7 +49,12 @@ public class myYunSu {
 			if (code != null) {
 				return code;
 			}else {
-				return result;
+				try {
+					return new String(result.getBytes(), "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
         }
         return null;

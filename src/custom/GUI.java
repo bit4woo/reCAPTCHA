@@ -231,7 +231,7 @@ public class GUI extends JPanel {//change 1 for burp
 		APIRequestRaws.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				if (APIRequestRaws.getText() == "") {
+				if (APIRequestRaws.getText().equals("")) {
 					APIRequestRaws.setText("username=%s&password=%s&typeid=%s&timeout=%s&softid=%s&softkey=%s");
 				}
 			}
