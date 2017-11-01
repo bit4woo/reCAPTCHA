@@ -58,7 +58,7 @@ import custom.myYunSu;
 //public class GUI extends JFrame { //change 1 for test
 public class GUI extends JPanel {//change 1 for burp
 	
-    private String ExtenderName = "reCAPTCHA v0.1 by bit4";
+    private String ExtenderName = "reCAPTCHA v0.2 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
 
 	private JPanel contentPane;
