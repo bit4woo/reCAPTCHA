@@ -28,8 +28,8 @@ public class RequestHelper {
 	
 	public static void main(String[] args) {
 		try {
-			String httpservice = "https://ecss.pingan.com";
-			String raws ="GET /createImageCode?t=1509343555818 HTTP/1.1\r\n" + 
+			//String httpservice = "https://ecss.pingan.com";
+			String raws1 ="GET /createImageCode?t=1509343555818 HTTP/1.1\r\n" + 
 					"Host: ecss.pingan.com\r\n" + 
 					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
 					"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" + 
@@ -41,6 +41,15 @@ public class RequestHelper {
 					"Pragma: no-cache\r\n" + 
 					"Cache-Control: no-cache\r\n" + 
 					"\r\n" + 
+					"";
+			String httpservice = "http://www.cnhww.com";
+			String raws = "GET /demo5/GetCode.asp HTTP/1.1\r\n" + 
+					"Host: www.cnhww.com\r\n" + 
+					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
+					"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" + 
+					"Accept-Language: en-US,en;q=0.5\r\n" + 
+					"Connection: close\r\n" + 
+					"Upgrade-Insecure-Requests: 1\r\n" + 
 					"";
 			RequestHelper x = new RequestHelper();
 			x.httpservice = httpservice;
@@ -77,13 +86,27 @@ public class RequestHelper {
     
     public String writeImageToDisk(byte[] img){
         try {
-        	String imgName = this.host+System.currentTimeMillis()+".jpg";
+        	String imgName = this.host+System.currentTimeMillis();
             File file = new File(imgName);
             FileOutputStream fops = new FileOutputStream(file);  
             fops.write(img);  
             //fops.flush();  
             fops.close();
-            return imgName;
+            
+		    String type = imageType.getPicType(imgName);
+		    String newName = null;
+		    if(type.equals("unknown")) {
+		    	newName =imgName +".jpg";
+		    }else {
+		    	newName = imgName +"."+type;
+		    }
+		    System.out.println(newName);
+		    File oldfile = new File(imgName);
+		    File newfile = new File(newName);
+		    oldfile.renameTo(newfile);
+		    //String newFileName = newfile.getName();
+		    
+            return newName;
         } catch (Exception e) {  
             e.printStackTrace();
         }  

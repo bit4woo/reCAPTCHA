@@ -14,11 +14,13 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.FlowLayout;
 import javax.swing.JSplitPane;
 import java.awt.Component;
 import java.awt.Desktop;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 
@@ -167,7 +169,19 @@ public class GUI extends JPanel {//change 1 for burp
 				}
 				
 				imgPath.setText(imgpath);
-				label_showimg.setIcon(new ImageIcon(imgpath));
+				//label_showimg.setIcon(new ImageIcon(imgpath));
+				Image image;
+				try {
+					image = ImageIO.read(new File(imgpath));
+					ImageIcon icon = new ImageIcon(image);
+					label_showimg.setIcon(icon);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+
+				//label_showimg.setIcon(new ImageIcon("D:\\eclipse-workspace\\reCAPTCHA\\www.cnhww.com1509530485395.bmp"));
 			}
 		});
 		

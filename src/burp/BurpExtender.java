@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import custom.GUI;
 import custom.myYunSu;
+import custom.imageType;
 
 public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator
 {	
@@ -93,7 +94,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 			//stdout.println("body length");
 			//stdout.println(body.length);
 		
-		    imgName = getHost(helpers.analyzeRequest(messageInfo))+System.currentTimeMillis()+".jpg";
+		    imgName = getHost(helpers.analyzeRequest(messageInfo))+System.currentTimeMillis();
 		    //stdout.println(imgName);
 		    try {
 		    	File imageFile = new File(imgName);
@@ -106,7 +107,20 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-		    return imgName;
+		    String type = imageType.getPicType(imgName);
+		    String newName = null;
+		    if(type.equals("unknown")) {
+		    	newName =imgName +"jpg";
+		    }else {
+		    	newName = imgName +type;
+		    }
+		    
+		    File oldfile = new File(imgName);
+		    File newfile = new File(newName);
+		    oldfile.renameTo(newfile);
+		    //String newFileName = newfile.getName();
+		    
+            return newName;
 		}
 		else {
 			return null;
