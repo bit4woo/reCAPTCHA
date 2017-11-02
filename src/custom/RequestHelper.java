@@ -8,7 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.*;
+
 
 import org.apache.commons.io.IOUtils;
 
@@ -51,6 +60,17 @@ public class RequestHelper {
 					"Connection: close\r\n" + 
 					"Upgrade-Insecure-Requests: 1\r\n" + 
 					"";
+			//String httpservice = "https://oms.meizu.com:8443";
+			String raws2 = "GET /cas/captcha.htm HTTP/1.1\r\n" + 
+					"Host: oms.meizu.com:8443\r\n" + 
+					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
+					"Accept: */*\r\n" + 
+					"Accept-Language: en-US,en;q=0.5\r\n" + 
+					"Referer: https://oms.meizu.com:8443/cas/login?service=http%3A%2F%2Foms.meizu.com%2Flogin.action\r\n" + 
+					"Cookie: JSESSIONID=9CA93BDD402AD7AA41962C577874B105; MZ_STORE_UUID=7508ed10-fa01-473f-9c1e-20fb05abe416; tj_coid=6391ea46eb6c0d45226b205940b0f353; CSRF_ID=3f7c2d42-8fe1-47e8-95b5-d2a129d9727d; MEIZUSTORECARTCOUNT=%7B%22c%22%3A0%2C%22t%22%3A1509602002356%2C%22s%22%3Afalse%7D\r\n" + 
+					"Connection: close\r\n" + 
+					"Cache-Control: max-age=0\r\n" + 
+					"";
 			RequestHelper x = new RequestHelper();
 			x.httpservice = httpservice;
 			x.raws =raws;
@@ -63,7 +83,7 @@ public class RequestHelper {
 		}
 	}
 	
-	public byte[] readStream(InputStream inStream) throws Exception { //’‚∏ˆ∑Ω∑®”–µ„Œ Ã‚£¨Õº∆¨÷ª”–“ª∞Î
+	public byte[] readStream(InputStream inStream) throws Exception { //ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ–µÔøΩÔøΩÔøΩÔøΩ‚£¨Õº∆¨÷ªÔøΩÔøΩ“ªÔøΩÔøΩ
 	    int count = 0; 
 	    while (count == 0) {  
 	        count = inStream.available();  
@@ -134,25 +154,68 @@ public class RequestHelper {
     	}
     }
     
+    private static TrustManager myX509TrustManager = new X509TrustManager() { 
+
+        @Override 
+        public X509Certificate[] getAcceptedIssuers() { 
+            return null; 
+        } 
+
+        @Override 
+        public void checkServerTrusted(X509Certificate[] chain, String authType) 
+        throws CertificateException { 
+        } 
+
+        @Override 
+        public void checkClientTrusted(X509Certificate[] chain, String authType) 
+        throws CertificateException { 
+        } 
+    };
+    
    public byte[] dorequest() throws Exception {
 	   
 	   
 		try {  
-            URL url = new URL(this.strurl);  
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-            for (Map.Entry<String, String> entry : this.headers.entrySet()) {
-            	conn.addRequestProperty(entry.getKey(),entry.getValue());
-            	//conn.addRequestProperty("User-Agent","Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0");
+            if(this.strurl.startsWith("https:")) {
+            	URL url = new URL(this.strurl);
+                // ÂàõÂª∫SSLContextÂØπË±°ÔºåÂπ∂‰ΩøÁî®Êàë‰ª¨ÊåáÂÆöÁöÑ‰ø°‰ªªÁÆ°ÁêÜÂô®ÂàùÂßãÂåñ    
+                TrustManager[] tm = new TrustManager[]{myX509TrustManager};    
+                SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");    
+                sslContext.init(null, tm, new java.security.SecureRandom());    
+                // ‰ªé‰∏äËø∞SSLContextÂØπË±°‰∏≠ÂæóÂà∞SSLSocketFactoryÂØπË±°    
+                SSLSocketFactory ssf = sslContext.getSocketFactory();      
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();    
+                conn.setSSLSocketFactory(ssf);  
+                for (Map.Entry<String, String> entry : this.headers.entrySet()) {
+                	conn.addRequestProperty(entry.getKey(),entry.getValue());
+                	//conn.addRequestProperty("User-Agent","Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0");
+                }
+                conn.setRequestMethod(this.method);  
+                conn.setConnectTimeout(5 * 1000);
+                conn.setReadTimeout(8*1000);
+                InputStream inStream = conn.getInputStream();
+                byte[] btImg = readInputStream(inStream);
+                return btImg;   
             }
-            conn.setRequestMethod(this.method);  
-            conn.setConnectTimeout(5 * 1000);
-            conn.setReadTimeout(8*1000);
-            InputStream inStream = conn.getInputStream();//Õ®π˝ ‰»Î¡˜ªÒ»°Õº∆¨ ˝æ›  
-            byte[] btImg = readInputStream(inStream);//µ√µΩÕº∆¨µƒ∂˛Ω¯÷∆ ˝æ›  
-            return btImg;  
+            else {
+            	URL url = new URL(this.strurl);
+            	HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                for (Map.Entry<String, String> entry : this.headers.entrySet()) {
+                	conn.addRequestProperty(entry.getKey(),entry.getValue());
+                	//conn.addRequestProperty("User-Agent","Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0");
+                }
+                conn.setRequestMethod(this.method);  
+                conn.setConnectTimeout(5 * 1000);
+                conn.setReadTimeout(8*1000);
+                InputStream inStream = conn.getInputStream();
+                byte[] btImg = readInputStream(inStream);
+                return btImg;  
+            }
+            
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
+            return (e.toString()).getBytes();
         }  
-        return null;
+        
    }
 }

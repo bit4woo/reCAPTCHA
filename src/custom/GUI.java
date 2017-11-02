@@ -58,7 +58,7 @@ import custom.myYunSu;
 //public class GUI extends JFrame { //change 1 for test
 public class GUI extends JPanel {//change 1 for burp
 	
-    private String ExtenderName = "reCAPTCHA v0.3 by bit4";
+    private String ExtenderName = "reCAPTCHA v0.4 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
     private String Abouttypeid = "http://www.ysdm.net/home/PriceType";
 
@@ -160,28 +160,19 @@ public class GUI extends JPanel {//change 1 for burp
 				x.httpservice = httpservice;
 				x.raws =httpRaws;
 				x.parser();
-				byte[] bytes;
-				String imgpath =null;
 				try {
-					bytes = x.dorequest();
-					imgpath = x.writeImageToDisk(bytes);
+					byte[] bytes = x.dorequest();
+					String imgpath = x.writeImageToDisk(bytes);
+					imgPath.setText(imgpath);
+					//label_showimg.setIcon(new ImageIcon(imgpath));
+					Image image = ImageIO.read(new File(imgpath));
+					ImageIcon icon = new ImageIcon(image);
+					label_showimg.setIcon(icon);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					imgPath.setText(e.getMessage());
 				}
-				
-				imgPath.setText(imgpath);
-				//label_showimg.setIcon(new ImageIcon(imgpath));
-				Image image;
-				try {
-					image = ImageIO.read(new File(imgpath));
-					ImageIcon icon = new ImageIcon(image);
-					label_showimg.setIcon(icon);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 
 				//label_showimg.setIcon(new ImageIcon("D:\\eclipse-workspace\\reCAPTCHA\\www.cnhww.com1509530485395.bmp"));
 			}
@@ -213,6 +204,7 @@ public class GUI extends JPanel {//change 1 for burp
 		
 		APIResulttextArea = new JTextArea();
 		APIResulttextArea.setWrapStyleWord(true);
+		APIResulttextArea.setFont(new Font("ËÎÌו", Font.BOLD, 12));//use this to display Chinese correctly.!!!
 		panel_1.add(APIResulttextArea);
 		
 		panel_5 = new JPanel();

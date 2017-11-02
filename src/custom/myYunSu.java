@@ -16,14 +16,14 @@ import org.xml.sax.SAXException;
 
 public class myYunSu {
 	public static void main(String[] args) {
-		String parastring = "username=komi_long&password=komi2016&typeid=2040&timeout=90&softid=1&softkey=b40ffbee5c1cf4e38028c197eb2fc751";
-		String imgPath = "E:\\wolaidai\\==wininit==\\work\\ecss.pingan.com1509447585218.jpg";
+		String parastring = "username=xxxx&password=xxxx&typeid=3040&timeout=60&softid=66239&softkey=a44fbc0b1900420681e436fc424cbd86";
+		String imgPath = "E:\\wolaidai\\==wininit==\\work\\www.cnhww.com1509603432430.bmp";
 		System.out.print(getCode(imgPath,parastring));
 	}
 	
 	public static HashMap<String,String> getConfig(String paraString) {
 		HashMap<String,String> paraMap = new HashMap<String,String>();
-		String[] tmp = paraString.split("&");
+		String[] tmp = paraString.trim().split("&");
 		for(int i=0;i < tmp.length;i++) {
 			String key = tmp[i].split("=")[0];
 			String value = tmp[i].split("=")[1];
@@ -49,12 +49,8 @@ public class myYunSu {
 			if (code != null) {
 				return code;
 			}else {
-				try {
-					return new String(result.getBytes(), "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				return result;
+				//return new String (result.getBytes("utf-8"),"utf-8");
 			}
         }
         return null;

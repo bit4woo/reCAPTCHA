@@ -2,12 +2,14 @@ package test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class test {
 	public static void main(String[] args){
+		System.out.println(Charset.defaultCharset());
 		try {
 			URL url = new URL("http://www.runoob.com/index.html?language=cn#j2se");
 			String urlpath = url.getPath();
