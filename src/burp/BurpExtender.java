@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import custom.GUI;
+import custom.RequestHelper;
 import custom.myYunSu;
 import custom.imageType;
 
@@ -231,11 +232,24 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 		int times = 0;
 		while(times <=5) {
 			if (imgMessageInfo!=null) {
-				String imgpath = getImage(imgMessageInfo);
-				String paraString = GUI.APIRequestRaws.getText();
-				String code = myYunSu.getCode(imgpath,paraString);
-				stdout.println(imgpath+" "+code);
-				return code.getBytes();
+				try {
+					//String imgpath = getImage(imgMessageInfo);
+					RequestHelper x = new RequestHelper();
+					x.httpservice = GUI.imgHttpService.getText();
+					x.raws =GUI.imgRequestRaws.getText();
+					x.parser();
+					byte[] bytes;
+					bytes = x.dorequest();
+					String imgpath = x.writeImageToDisk(bytes);
+					String paraString = GUI.APIRequestRaws.getText();
+					String code = myYunSu.getCode(imgpath,paraString);
+					stdout.println(imgpath+" "+code);
+					return code.getBytes();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					return e.getMessage().getBytes();
+				}
+
 			}
 			else {
 				stdout.println("Failed try!!! please send image request to reCAPTCHA first!");
