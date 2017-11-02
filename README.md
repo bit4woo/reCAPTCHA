@@ -21,7 +21,7 @@
 
 4. http://www.ysdm.net 的API是目前唯一支持的接口,其中的各项参数需要自行注册帐号并填写，才能成功调用接口完成图片的识别。该API需要的参数如下，请用正确的值替换%s ，特别注意typeid值的设定(http://www.ysdm.net/home/PriceType)。
 
-   `username=%s&password=%s&typeid=%s&timeout=%s&softid=%s&softkey=%s`
+   `username=%s&password=%s&typeid=%s`
 
 在Intruder中使用：
 
