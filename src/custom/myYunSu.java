@@ -35,8 +35,8 @@ public class myYunSu {
     public static String getCode(String imagePath,String paraString) {//GEN-FIRST:event_jButton1ActionPerformed
         //        
     	HashMap<String,String> paraMap = getConfig(paraString);
-    	String softid = paraMap.get("softid");
-        String softkey = paraMap.get("softkey");
+    	String softid = "66182";
+        String softkey = "d1003debf03b488fae7064b48f5b6ef8";
         String typeid =  paraMap.get("typeid");
         
         String username = paraMap.get("username");

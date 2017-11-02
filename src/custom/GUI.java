@@ -58,8 +58,9 @@ import custom.myYunSu;
 //public class GUI extends JFrame { //change 1 for test
 public class GUI extends JPanel {//change 1 for burp
 	
-    private String ExtenderName = "reCAPTCHA v0.2 by bit4";
+    private String ExtenderName = "reCAPTCHA v0.3 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
+    private String Abouttypeid = "http://www.ysdm.net/home/PriceType";
 
 	private JPanel contentPane;
 	private JPanel panel_2;
@@ -85,6 +86,7 @@ public class GUI extends JPanel {//change 1 for burp
 	private JPanel panel_6;
 	private JPanel panel_7;
 	private JTextField imgPath;
+	private JLabel lblAboutTypeid;
 
 	/**
 	 * Launch the application.
@@ -227,6 +229,35 @@ public class GUI extends JPanel {//change 1 for burp
 				}
 				}
 		});
+		
+		lblAboutTypeid = new JLabel("About Typeid ?");
+		lblAboutTypeid.setHorizontalAlignment(SwingConstants.LEFT);
+		lblAboutTypeid.setFont(new Font("ËÎÌו", Font.BOLD, 12));
+		lblAboutTypeid.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					URI uri = new URI(Abouttypeid);
+					Desktop desktop = Desktop.getDesktop();
+					if(Desktop.isDesktopSupported()&&desktop.isSupported(Desktop.Action.BROWSE)){
+						desktop.browse(uri);
+					}
+				} catch (Exception e2) {
+					// TODO: handle exception
+					//callbacks.printError(e2.getMessage());
+				}
+				
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblAboutTypeid.setForeground(Color.BLUE);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblAboutTypeid.setForeground(Color.BLACK);
+			}
+		});
+		panel_5.add(lblAboutTypeid);
 		panel_5.add(btnRequestAPI);
 		btnRequestAPI.setHorizontalAlignment(SwingConstants.LEFT);
 		
@@ -246,11 +277,11 @@ public class GUI extends JPanel {//change 1 for burp
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				if (APIRequestRaws.getText().equals("")) {
-					APIRequestRaws.setText("username=%s&password=%s&typeid=%s&timeout=%s&softid=%s&softkey=%s");
+					APIRequestRaws.setText("username=%s&password=%s&typeid=%s");
 				}
 			}
 		});
-		APIRequestRaws.setText("username=%s&password=%s&typeid=%s&timeout=%s&softid=%s&softkey=%s");
+		APIRequestRaws.setText("username=%s&password=%s&typeid=%s");
 		panel_4.add(APIRequestRaws);
 		APIRequestRaws.setLineWrap(true);
 		
