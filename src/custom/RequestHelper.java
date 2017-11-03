@@ -37,20 +37,6 @@ public class RequestHelper {
 	
 	public static void main(String[] args) {
 		try {
-			//String httpservice = "https://ecss.pingan.com";
-			String raws1 ="GET /createImageCode?t=1509343555818 HTTP/1.1\r\n" + 
-					"Host: ecss.pingan.com\r\n" + 
-					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
-					"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" + 
-					"Accept-Language: en-US,en;q=0.5\r\n" + 
-					"Referer: https://ecss.pingan.com/login\r\n" + 
-					"Cookie: WLS_HTTP_BRIDGE_ECPUB=IJpr6OOnqckcftgpo95Dviotd67OMbZ51XlrfF9GFMM8uVOLI8V4!-1635147988; BIGipServerGroup-GMSS_PrdPool=2586057900.847.0000; SSOPWSLOGIN=0\r\n" + 
-					"Connection: close\r\n" + 
-					"Upgrade-Insecure-Requests: 1\r\n" + 
-					"Pragma: no-cache\r\n" + 
-					"Cache-Control: no-cache\r\n" + 
-					"\r\n" + 
-					"";
 			String httpservice = "http://www.cnhww.com";
 			String raws = "GET /demo5/GetCode.asp HTTP/1.1\r\n" + 
 					"Host: www.cnhww.com\r\n" + 
@@ -83,7 +69,7 @@ public class RequestHelper {
 		}
 	}
 	
-	public byte[] readStream(InputStream inStream) throws Exception { //��������е����⣬ͼƬֻ��һ��
+	public byte[] readStream(InputStream inStream) throws Exception { //this method has problem, image only display half
 	    int count = 0; 
 	    while (count == 0) {  
 	        count = inStream.available();  
@@ -178,11 +164,11 @@ public class RequestHelper {
 		try {  
             if(this.strurl.startsWith("https:")) {
             	URL url = new URL(this.strurl);
-                // 创建SSLContext对象，并使用我们指定的信任管理器初始化    
+                // 鍒涘缓SSLContext瀵硅薄锛屽苟浣跨敤鎴戜滑鎸囧畾鐨勪俊浠荤鐞嗗櫒鍒濆鍖�    
                 TrustManager[] tm = new TrustManager[]{myX509TrustManager};    
                 SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");    
                 sslContext.init(null, tm, new java.security.SecureRandom());    
-                // 从上述SSLContext对象中得到SSLSocketFactory对象    
+                // 浠庝笂杩癝SLContext瀵硅薄涓緱鍒癝SLSocketFactory瀵硅薄    
                 SSLSocketFactory ssf = sslContext.getSocketFactory();      
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();    
                 conn.setSSLSocketFactory(ssf);  
