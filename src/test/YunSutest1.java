@@ -18,7 +18,7 @@ import burp.BurpExtender;
 public class YunSutest1 {
 
 	public static void main(String [] args) {
-		String a = burp.BurpExtender.getCode("E:\\wolaidai\\==wininit==\\work\\ecss.pingan.com1509004978504.jpg");
+		String a = burp.BurpExtender.getCode("1509004978504.jpg");
 		System.out.println(a);
 		System.out.println(displayXmlResult(a));
 		

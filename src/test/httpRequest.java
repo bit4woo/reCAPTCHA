@@ -17,7 +17,7 @@ public class httpRequest {
      * @param args
      */  
     public static void main(String[] args) {
-    	writeImageToDisk(getImageFromNetByUrl("https://ecss.pingan.com/createImageCode?t=1509343555818"),"test.jpg");
+    	writeImageToDisk(getImageFromNetByUrl("https://xxx.xxx.com/createImageCode?t=1509343555818"),"test.jpg");
     }
 
     /**

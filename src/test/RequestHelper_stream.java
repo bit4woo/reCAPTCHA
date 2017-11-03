@@ -17,7 +17,7 @@ public class RequestHelper_stream {
 	
 	public static void main(String[] args) {
 		try {
-			String httpservice = "https://ecss.pingan.com";
+			String httpservice = "https://xxx.xxx.com";
 			String raws ="GET /createImageCode?t=1509343555818 HTTP/1.1\r\n" + 
 					"Host: ecss.pingan.com\r\n" + 
 					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
