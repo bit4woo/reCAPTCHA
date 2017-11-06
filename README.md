@@ -72,3 +72,6 @@ payload 2 的配置和情况一中的配置完全一样。
 **作者**
 
 [bit4](http://www.code2sec.com/)@[勾陈安全](http://www.polaris-lab.com/)
+
+Burp插件微信交流群：![wechat_group](doc/wechat_group.jpg)
+
