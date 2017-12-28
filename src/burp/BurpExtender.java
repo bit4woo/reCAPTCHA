@@ -34,7 +34,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
     private IExtensionHelpers helpers;
     
     public PrintWriter stdout;//现在这里定义变量，再在registerExtenderCallbacks函数中实例化，如果都在函数中就只是局部变量，不能在这实例化，因为要用到其他参数。
-    private String ExtenderName = "reCAPTCHA v0.4 by bit4";
+    private String ExtenderName = "reCAPTCHA v0.5 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
 	
 	private String imgName;
@@ -183,13 +183,13 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	            	
 	            	GUI.imgRequestRaws.setText(new String(imgMessageInfo.getRequest())); //在GUI中显示这个请求信息。
 	            	
-	            	//IHttpService httpservice =imgMessageInfo.getHttpService();
-	            	//String host = httpservice.getHost();
-	            	//int port = httpservice.getPort();
-	            	//String protocol = httpservice.getProtocol();
-	            	
-	            	
-	            	GUI.imgHttpService.setText(imgMessageInfo.getHttpService().toString());
+	            	IHttpService httpservice =imgMessageInfo.getHttpService();
+	            	String host = httpservice.getHost();
+	            	int port = httpservice.getPort();
+	            	String protocol = httpservice.getProtocol();
+	            	String shortUrl = protocol+"://"+host+":"+port;
+
+	            	GUI.imgHttpService.setText(shortUrl);
 	            	
 	            }
 	            catch (Exception e1)
