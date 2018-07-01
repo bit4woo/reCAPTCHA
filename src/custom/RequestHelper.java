@@ -18,9 +18,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.*;
 
-
-import org.apache.commons.io.IOUtils;
-
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
 
@@ -33,18 +30,21 @@ public class RequestHelper {
 	public String method = null; //GET POST
 	public String strurl =null;
 	public HashMap<String,String> headers = new HashMap<String,String>();
+	public String fileType = null;
 	
 	
 	public static void main(String[] args) {
 		try {
-			String httpservice = "http://www.cnhww.com";
-			String raws = "GET /demo5/GetCode.asp HTTP/1.1\r\n" + 
-					"Host: www.cnhww.com\r\n" + 
-					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
+			String httpservice = "http://www.faithfulfitnessforlife.com";
+			String raws = "GET /fitness_blog/Captcha.aspx HTTP/1.1\r\n" + 
+					"Host: www.faithfulfitnessforlife.com\r\n" + 
+					"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n" + 
 					"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" + 
-					"Accept-Language: en-US,en;q=0.5\r\n" + 
+					"Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2\r\n" + 
+					"Accept-Encoding: gzip, deflate\r\n" + 
+					"Cookie: ASP.NET_SessionId=xisp1kz0ttyhet55dhdjbe55\r\n" + 
 					"Connection: close\r\n" + 
-					"Upgrade-Insecure-Requests: 1\r\n" + 
+					"Upgrade-Insecure-Requests: 1"+
 					"";
 			//String httpservice = "https://oms.meizu.com:8443";
 			String raws2 = "GET /cas/captcha.htm HTTP/1.1\r\n" + 
@@ -98,13 +98,15 @@ public class RequestHelper {
             fops.write(img);  
             //fops.flush();  
             fops.close();
-            
-		    String type = imageType.getPicType(imgName);
+            if(fileType == null) {
+            	fileType = imageType.getPicType(imgName);
+            }
+		    
 		    String newName = null;
-		    if(type.equals("unknown")) {
+		    if(fileType.equals("unknown")) {
 		    	newName =imgName +".jpg";
 		    }else {
-		    	newName = imgName +"."+type;
+		    	newName = imgName +"."+fileType;
 		    }
 		    System.out.println(newName);
 		    File oldfile = new File(imgName);
@@ -164,11 +166,11 @@ public class RequestHelper {
 		try {  
             if(this.strurl.startsWith("https:")) {
             	URL url = new URL(this.strurl);
-                // 鍒涘缓SSLContext瀵硅薄锛屽苟浣跨敤鎴戜滑鎸囧畾鐨勪俊浠荤鐞嗗櫒鍒濆鍖�    
+                
                 TrustManager[] tm = new TrustManager[]{myX509TrustManager};    
                 SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");    
                 sslContext.init(null, tm, new java.security.SecureRandom());    
-                // 浠庝笂杩癝SLContext瀵硅薄涓緱鍒癝SLSocketFactory瀵硅薄    
+
                 SSLSocketFactory ssf = sslContext.getSocketFactory();      
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();    
                 conn.setSSLSocketFactory(ssf);  
@@ -180,6 +182,7 @@ public class RequestHelper {
                 conn.setConnectTimeout(5 * 1000);
                 conn.setReadTimeout(8*1000);
                 InputStream inStream = conn.getInputStream();
+                fileType= conn.getContentType().substring(conn.getContentType().indexOf("/")+1, conn.getContentType().indexOf(";"));
                 byte[] btImg = readInputStream(inStream);
                 return btImg;   
             }
@@ -194,6 +197,7 @@ public class RequestHelper {
                 conn.setConnectTimeout(5 * 1000);
                 conn.setReadTimeout(8*1000);
                 InputStream inStream = conn.getInputStream();
+                fileType= conn.getContentType().substring(conn.getContentType().indexOf("/")+1, conn.getContentType().indexOf(";"));
                 byte[] btImg = readInputStream(inStream);
                 return btImg;  
             }

@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import java.awt.Font;
 import java.awt.Image;
@@ -40,9 +39,6 @@ import java.util.Set;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
@@ -53,14 +49,17 @@ import burp.IHttpService;
 import burp.ITempFile;
 import custom.RequestHelper;
 import custom.myYunSu;
+import javax.swing.JComboBox;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 
 
 //////////////3 changes need to do, when debugging change to product!!!////////////////////
 
 //change 1
-//public class GUI extends JFrame { //change 1 for test
-public class GUI extends JPanel {//change 1 for burp
+public class xxxx extends JFrame { //change 1 for test
+//public class GUI extends JPanel {//change 1 for burp
 	
     private String ExtenderName = "reCAPTCHA v0.5 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
@@ -84,14 +83,13 @@ public class GUI extends JPanel {//change 1 for burp
 	public IHttpRequestResponse MessageInfo;
 	private JPanel panel_3;
 	private JPanel panel_4;
-	private JTextField APIHttpService;
 	private JTextArea APIResulttextArea;
 	private JPanel panel_5;
 	private JPanel panel_6;
 	private JPanel panel_7;
 	private JTextField imgPath;
 	private JLabel lblAboutTypeid;
-	private JComboBox APIcomboBox;
+	public JComboBox APIcomboBox;
 
 	/**
 	 * Launch the application.
@@ -100,7 +98,7 @@ public class GUI extends JPanel {//change 1 for burp
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GUI frame = new GUI();
+					xxxx frame = new xxxx();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -112,16 +110,16 @@ public class GUI extends JPanel {//change 1 for burp
 	/**
 	 * Create the frame.
 	 */
-	public GUI() {
+	public xxxx() {
 	    
 	    //change 2
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//change2 for test
-		//setBounds(100, 100, 930, 497);//change2 for test
-		contentPane = this; //change3 for burp
-		//JPanel contentPane = new JPanel();////change3 for test
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//change2 for test
+		setBounds(100, 100, 930, 497);//change2 for test
+		//contentPane = this; //change3 for burp
+		JPanel contentPane = new JPanel();////change3 for test
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		//setContentPane(contentPane);//change2 for test
+		setContentPane(contentPane);//change2 for test
 		
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.5);
@@ -158,14 +156,14 @@ public class GUI extends JPanel {//change 1 for burp
 			public void actionPerformed(ActionEvent arg0) {
 				//String httpservice =MessageInfo.getHttpService().toString();
 				//String httpRaws = MessageInfo.getRequest().toString();
+				
+				String httpservice = imgHttpService.getText();
+				String httpRaws = imgRequestRaws.getText();
+				RequestHelper x = new RequestHelper();
+				x.httpservice = httpservice;
+				x.raws =httpRaws;
+				x.parser();
 				try {
-					String httpservice = imgHttpService.getText();
-					String httpRaws = imgRequestRaws.getText();
-					RequestHelper x = new RequestHelper();
-					x.httpservice = httpservice;
-					x.raws =httpRaws;
-					x.parser();
-
 					byte[] bytes = x.dorequest();
 					String imgpath = x.writeImageToDisk(bytes);
 					imgPath.setText(imgpath);
@@ -174,6 +172,8 @@ public class GUI extends JPanel {//change 1 for burp
 					ImageIcon icon = new ImageIcon(image);
 					label_showimg.setIcon(icon);
 				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 					imgPath.setText(e.getMessage());
 				}
 
@@ -221,6 +221,8 @@ public class GUI extends JPanel {//change 1 for burp
 				APIResulttextArea.setText(result);
 				}
 		});
+		
+
 		
 		lblAboutTypeid = new JLabel("About Typeid ?");
 		lblAboutTypeid.setHorizontalAlignment(SwingConstants.LEFT);
@@ -277,12 +279,6 @@ public class GUI extends JPanel {//change 1 for burp
 		APIcomboBox.addItem("GSA Captcha Breaker");
 		APIcomboBox.addItem("http://www.ysdm.net");
 		
-		APIHttpService = new JTextField();
-		APIHttpService.setText("http://www.ysdm.net");
-		APIHttpService.setHorizontalAlignment(SwingConstants.LEFT);
-		panel_4.add(APIHttpService, BorderLayout.NORTH);
-		APIHttpService.setColumns(30);
-		
 
 		
 		panel_2 = new JPanel();
@@ -319,7 +315,6 @@ public class GUI extends JPanel {//change 1 for burp
 		});
 		panel_2.add(lblNewLabel_2);
 	}
-
 	
 	public String getAnswer(String imgpath) {
 		Object Method = this.APIcomboBox.getSelectedItem();
@@ -332,7 +327,7 @@ public class GUI extends JPanel {//change 1 for burp
 			}else if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
 			{	
 				String httpService = APIRequestRaws.getText();
-				result = myGSA.getCode(imgpath, httpService);
+				result = "xxx";
 			}
 		} else {
 			result = "image path is null!";

@@ -241,9 +241,8 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 					byte[] bytes;
 					bytes = x.dorequest();
 					String imgpath = x.writeImageToDisk(bytes);
-					String paraString = GUI.APIRequestRaws.getText();
-					String code = myYunSu.getCode(imgpath,paraString);
-					stdout.println(imgpath+" "+code);
+					String code = GUI.getAnswer(imgpath);
+					stdout.println(imgpath+" ---- "+code);
 					return code.getBytes();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
