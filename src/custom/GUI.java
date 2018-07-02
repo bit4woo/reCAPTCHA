@@ -48,8 +48,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import burp.BurpExtender;
+import burp.IBurpExtenderCallbacks;
+import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
+import burp.IMessageEditor;
 import burp.ITempFile;
 import custom.RequestHelper;
 import custom.myYunSu;
@@ -62,7 +65,6 @@ import custom.myYunSu;
 //public class GUI extends JFrame { //change 1 for test
 public class GUI extends JPanel {//change 1 for burp
 	
-    private String ExtenderName = "reCAPTCHA v0.5 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
     private String Abouttypeid = "http://www.ysdm.net/home/PriceType";
 
@@ -81,17 +83,22 @@ public class GUI extends JPanel {//change 1 for burp
 	private JLabel label_showimg;
 	public JTextField imgHttpService;
 	
-	public IHttpRequestResponse MessageInfo;
-	private JPanel panel_3;
+	public IHttpRequestResponse MessageInfo;// always needed 
+	public IMessageEditor imageMessageEditor;
+	public IBurpExtenderCallbacks callbacks;//needed by method 2
+	public IExtensionHelpers helpers;//needed by method 2
+	public BurpExtender BurpExtender;//needed by method 3
+	
+	
+	private JPanel panel_IMessage;
 	private JPanel panel_4;
-	private JTextField APIHttpService;
 	private JTextArea APIResulttextArea;
 	private JPanel panel_5;
 	private JPanel panel_6;
 	private JPanel panel_7;
 	private JTextField imgPath;
 	private JLabel lblAboutTypeid;
-	private JComboBox APIcomboBox;
+	private JComboBox<String> APIcomboBox;
 
 	/**
 	 * Launch the application.
@@ -156,19 +163,25 @@ public class GUI extends JPanel {//change 1 for burp
 		imgPath.setColumns(30);
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//String httpservice =MessageInfo.getHttpService().toString();
-				//String httpRaws = MessageInfo.getRequest().toString();
 				try {
+					//******method one: self-applied method RequestHelper*****
+					//String httpservice =MessageInfo.getHttpService().toString();
+					//String httpRaws =new String( MessageInfo.getRequest());
 					String httpservice = imgHttpService.getText();
 					String httpRaws = imgRequestRaws.getText();
-					RequestHelper x = new RequestHelper();
-					x.httpservice = httpservice;
-					x.raws =httpRaws;
-					x.parser();
-
-					byte[] bytes = x.dorequest();
-					String imgpath = x.writeImageToDisk(bytes);
+					String imgpath = RequestHelper.download(httpservice, httpRaws);
+					
+					//******method two: imageDownloader*****
+					//String imgpath = imageDownloader.download(callbacks, helpers, MessageInfo.getHttpService(), MessageInfo.getRequest());
+					
+					//******method three: getImage in BurpExtender*****
+					//String imgpath = BurpExtender.getImage(MessageInfo);
+					//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
+					//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
+					
+					
 					imgPath.setText(imgpath);
+					
 					//label_showimg.setIcon(new ImageIcon(imgpath));
 					Image image = ImageIO.read(new File(imgpath));
 					ImageIcon icon = new ImageIcon(image);
@@ -176,24 +189,24 @@ public class GUI extends JPanel {//change 1 for burp
 				} catch (Exception e) {
 					imgPath.setText(e.getMessage());
 				}
-
 				//label_showimg.setIcon(new ImageIcon("D:\\eclipse-workspace\\reCAPTCHA\\www.cnhww.com1509530485395.bmp"));
 			}
 		});
 		
-		panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		splitPane_1.setLeftComponent(panel_3);
-		panel_3.setLayout(new BorderLayout(0, 0));
+		panel_IMessage = new JPanel();
+		panel_IMessage.setBorder(new LineBorder(new Color(0, 0, 0)));
+		splitPane_1.setLeftComponent(panel_IMessage);
+		panel_IMessage.setLayout(new BorderLayout(0, 0));
 		
 		imgHttpService = new JTextField();
-		panel_3.add(imgHttpService, BorderLayout.NORTH);
+		panel_IMessage.add(imgHttpService, BorderLayout.NORTH);
 		imgHttpService.setHorizontalAlignment(SwingConstants.LEFT);
 		imgHttpService.setColumns(30);
 		
 		imgRequestRaws = new JTextArea();
-		panel_3.add(imgRequestRaws, BorderLayout.CENTER);
+		panel_IMessage.add(imgRequestRaws, BorderLayout.CENTER);
 		imgRequestRaws.setLineWrap(true);
+		
 		
 		splitPane_2 = new JSplitPane();
 		splitPane_2.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -262,7 +275,7 @@ public class GUI extends JPanel {//change 1 for burp
 		panel_4.add(APIRequestRaws);
 		APIRequestRaws.setLineWrap(true);
 		
-		APIcomboBox = new JComboBox();
+		APIcomboBox = new JComboBox<String>();
 		APIcomboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (APIcomboBox.getSelectedItem().equals("http://www.ysdm.net")) {
@@ -276,12 +289,6 @@ public class GUI extends JPanel {//change 1 for burp
 		panel_4.add(APIcomboBox, BorderLayout.NORTH);
 		APIcomboBox.addItem("GSA Captcha Breaker");
 		APIcomboBox.addItem("http://www.ysdm.net");
-		
-		APIHttpService = new JTextField();
-		APIHttpService.setText("http://www.ysdm.net");
-		APIHttpService.setHorizontalAlignment(SwingConstants.LEFT);
-		panel_4.add(APIHttpService, BorderLayout.NORTH);
-		APIHttpService.setColumns(30);
 		
 
 		
@@ -324,12 +331,12 @@ public class GUI extends JPanel {//change 1 for burp
 	public String getAnswer(String imgpath) {
 		Object Method = this.APIcomboBox.getSelectedItem();
 		String result = "";
-		if(imgpath != null) {
+		if(!imgpath.equals("")) {
 			if (Method.equals("http://www.ysdm.net")) {
 				String para = APIRequestRaws.getText();
 				result = myYunSu.getCode(imgpath, para);
 				
-			}else if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
+			}else if (Method.equals("GSA Captcha Breaker"))
 			{	
 				String httpService = APIRequestRaws.getText();
 				result = myGSA.getCode(imgpath, httpService);

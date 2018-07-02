@@ -46,6 +46,7 @@ import javax.swing.border.LineBorder;
 import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
+import burp.IMessageEditor;
 import burp.ITempFile;
 import custom.RequestHelper;
 import custom.myYunSu;
@@ -58,7 +59,7 @@ import java.awt.event.ItemEvent;
 //////////////3 changes need to do, when debugging change to product!!!////////////////////
 
 //change 1
-public class xxxx extends JFrame { //change 1 for test
+public class yyyy extends JFrame { //change 1 for test
 //public class GUI extends JPanel {//change 1 for burp
 	
     private String ExtenderName = "reCAPTCHA v0.5 by bit4";
@@ -81,7 +82,8 @@ public class xxxx extends JFrame { //change 1 for test
 	public JTextField imgHttpService;
 	
 	public IHttpRequestResponse MessageInfo;
-	private JPanel panel_3;
+	private JPanel panel_IMessage;
+	public IMessageEditor imageMessageEditor;
 	private JPanel panel_4;
 	private JTextArea APIResulttextArea;
 	private JPanel panel_5;
@@ -98,7 +100,7 @@ public class xxxx extends JFrame { //change 1 for test
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					xxxx frame = new xxxx();
+					yyyy frame = new yyyy();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -110,7 +112,7 @@ public class xxxx extends JFrame { //change 1 for test
 	/**
 	 * Create the frame.
 	 */
-	public xxxx() {
+	public yyyy() {
 	    
 	    //change 2
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//change2 for test
@@ -181,18 +183,18 @@ public class xxxx extends JFrame { //change 1 for test
 			}
 		});
 		
-		panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		splitPane_1.setLeftComponent(panel_3);
-		panel_3.setLayout(new BorderLayout(0, 0));
+		panel_IMessage = new JPanel();
+		panel_IMessage.setBorder(new LineBorder(new Color(0, 0, 0)));
+		splitPane_1.setLeftComponent(panel_IMessage);
+		panel_IMessage.setLayout(new BorderLayout(0, 0));
 		
 		imgHttpService = new JTextField();
-		panel_3.add(imgHttpService, BorderLayout.NORTH);
+		panel_IMessage.add(imgHttpService, BorderLayout.NORTH);
 		imgHttpService.setHorizontalAlignment(SwingConstants.LEFT);
 		imgHttpService.setColumns(30);
 		
 		imgRequestRaws = new JTextArea();
-		panel_3.add(imgRequestRaws, BorderLayout.CENTER);
+		panel_IMessage.add(imgRequestRaws, BorderLayout.CENTER);
 		imgRequestRaws.setLineWrap(true);
 		
 		splitPane_2 = new JSplitPane();
@@ -217,6 +219,7 @@ public class xxxx extends JFrame { //change 1 for test
 		btnRequestAPI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String imgpath = imgPath.getText();
+				System.out.print(imgpath+"????");
 				String result = getAnswer(imgpath);
 				APIResulttextArea.setText(result);
 				}
@@ -319,7 +322,7 @@ public class xxxx extends JFrame { //change 1 for test
 	public String getAnswer(String imgpath) {
 		Object Method = this.APIcomboBox.getSelectedItem();
 		String result = "";
-		if(imgpath != null) {
+		if(!imgpath.equals("")) {
 			if (Method.equals("http://www.ysdm.net")) {
 				String para = APIRequestRaws.getText();
 				result = myYunSu.getCode(imgpath, para);
@@ -327,7 +330,7 @@ public class xxxx extends JFrame { //change 1 for test
 			}else if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
 			{	
 				String httpService = APIRequestRaws.getText();
-				result = "xxx";
+				result = myGSA.getCode(imgpath, httpService);
 			}
 		} else {
 			result = "image path is null!";

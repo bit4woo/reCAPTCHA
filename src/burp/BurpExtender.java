@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import custom.YunSu;
+import custom.imageDownloader;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -34,11 +35,12 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
     private IExtensionHelpers helpers;
     
     public PrintWriter stdout;//现在这里定义变量，再在registerExtenderCallbacks函数中实例化，如果都在函数中就只是局部变量，不能在这实例化，因为要用到其他参数。
-    private String ExtenderName = "reCAPTCHA v0.5 by bit4";
+    private String ExtenderName = "reCAPTCHA v0.6 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
 	
 	private String imgName;
     public IHttpRequestResponse imgMessageInfo;
+    IMessageEditor imageMessageEditor;
     
     @Override
     public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks)
@@ -76,6 +78,17 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
     	}
     	return domain ;
 	}
+	public String getFileType(IResponseInfo analyzeResponse) {
+		String fileType = null;    
+	    List<String> headers = analyzeResponse.getHeaders();
+
+	    for(String header:headers) {
+	    	if(header.toLowerCase().startsWith("content-type")) {
+	    		fileType= header.substring(header.indexOf("/")+1, header.indexOf(";"));
+	    	}
+	    }
+	    return fileType;
+	}
 	
 	public String getImage(IHttpRequestResponse messageInfo) {
 		if (messageInfo != null) {
@@ -88,14 +101,13 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 			int body_length = response.length -BodyOffset;
 			byte[] body = subBytes(response,BodyOffset,body_length);
 			//这里之前遇到一个坑：现将byte[]转换为string，取substring后转换回来，这样是有问题的。
-			//stdout.println("Response length:");
-			//stdout.println(response.length);
-			//stdout.println("offset");
-			//stdout.println(BodyOffset);
-			//stdout.println("body length");
-			//stdout.println(body.length);
-		
-		    imgName = getHost(helpers.analyzeRequest(messageInfo))+System.currentTimeMillis();
+			
+			String fileType =getFileType(helpers.analyzeResponse(messageInfo.getResponse())); 
+			if(fileType==null) {
+			    fileType ="jpg";
+			}
+			
+		    imgName = System.currentTimeMillis()+service.getHost()+"."+fileType;
 		    //stdout.println(imgName);
 		    try {
 		    	File imageFile = new File(imgName);
@@ -108,23 +120,9 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-		    String type = imageType.getPicType(imgName);
-		    String newName = null;
-		    if(type.equals("unknown")) {
-		    	newName =imgName +"jpg";
-		    }else {
-		    	newName = imgName +type;
-		    }
-		    
-		    File oldfile = new File(imgName);
-		    File newfile = new File(newName);
-		    oldfile.renameTo(newfile);
-		    //String newFileName = newfile.getName();
-		    
-            return newName;
-		}
-		else {
-			return null;
+            return imgName;
+		}else {
+			return "messageInfo error";
 		}
 	}
 	
@@ -141,6 +139,8 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
           BurpExtender.this.GUI = new GUI();
           BurpExtender.this.callbacks.addSuiteTab(BurpExtender.this); //这里的BurpExtender.this实质是指ITab对象，也就是getUiComponent()中的contentPane.这个参数由CGUI()函数初始化。
           //如果这里报java.lang.NullPointerException: Component cannot be null 错误，需要排查contentPane的初始化是否正确。
+          
+          BurpExtender.this.GUI.BurpExtender = getThis();
         }
       });
     }
@@ -157,7 +157,9 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 		// TODO Auto-generated method stub
 		return this.GUI;
 	}
-
+	public BurpExtender getThis() {
+		return this;
+	}
 	
 	@Override
 	public List<JMenuItem> createMenuItems(IContextMenuInvocation invocation)
@@ -182,14 +184,8 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	            	GUI.MessageInfo = imgMessageInfo;
 	            	
 	            	GUI.imgRequestRaws.setText(new String(imgMessageInfo.getRequest())); //在GUI中显示这个请求信息。
-	            	
 	            	IHttpService httpservice =imgMessageInfo.getHttpService();
-	            	String host = httpservice.getHost();
-	            	int port = httpservice.getPort();
-	            	String protocol = httpservice.getProtocol();
-	            	String shortUrl = protocol+"://"+host+":"+port;
-
-	            	GUI.imgHttpService.setText(shortUrl);
+	            	GUI.imgHttpService.setText(httpservice.toString());
 	            	
 	            }
 	            catch (Exception e1)
@@ -232,15 +228,9 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 		int times = 0;
 		while(times <=5) {
 			if (imgMessageInfo!=null) {
-				try {
-					//String imgpath = getImage(imgMessageInfo);
-					RequestHelper x = new RequestHelper();
-					x.httpservice = GUI.imgHttpService.getText();
-					x.raws =GUI.imgRequestRaws.getText();
-					x.parser();
-					byte[] bytes;
-					bytes = x.dorequest();
-					String imgpath = x.writeImageToDisk(bytes);
+				try {					
+					//String imgpath = imageDownloader.download(callbacks, helpers, imgMessageInfo.getHttpService(), imgMessageInfo.getRequest());
+					String imgpath = this.getImage(imgMessageInfo);
 					String code = GUI.getAnswer(imgpath);
 					stdout.println(imgpath+" ---- "+code);
 					return code.getBytes();

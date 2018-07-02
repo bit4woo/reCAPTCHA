@@ -1,6 +1,9 @@
 package custom;
+import java.awt.Image;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
 import java.net.URL;
 import java.util.Arrays;
@@ -13,9 +16,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.swing.ImageIcon;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
+import javax.imageio.ImageIO;
 import javax.net.ssl.*;
 
 import burp.IHttpRequestResponse;
@@ -35,38 +41,50 @@ public class RequestHelper {
 	
 	public static void main(String[] args) {
 		try {
-			String httpservice = "http://www.faithfulfitnessforlife.com";
+			//String httpservice = "http://www.faithfulfitnessforlife.com";
 			String raws = "GET /fitness_blog/Captcha.aspx HTTP/1.1\r\n" + 
-					"Host: www.faithfulfitnessforlife.com\r\n" + 
-					"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n" + 
+					"Cookie: ASP.NET_SessionId=xisp1kz0ttyhet55dhdjbe55\r\n" + 
 					"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" + 
+					"Upgrade-Insecure-Requests: 1\r\n" + 
+					"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n" + 
+					"Connection: close\r\n" + 
 					"Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2\r\n" + 
 					"Accept-Encoding: gzip, deflate\r\n" + 
-					"Cookie: ASP.NET_SessionId=xisp1kz0ttyhet55dhdjbe55\r\n" + 
-					"Connection: close\r\n" + 
-					"Upgrade-Insecure-Requests: 1"+
+					"Host: www.faithfulfitnessforlife.com\r\n" + 
+					"\r\n" + 
 					"";
-			//String httpservice = "https://oms.meizu.com:8443";
+			String httpservice = "https://oms.meizu.com:8443";
 			String raws2 = "GET /cas/captcha.htm HTTP/1.1\r\n" + 
 					"Host: oms.meizu.com:8443\r\n" + 
-					"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0\r\n" + 
-					"Accept: */*\r\n" + 
+					"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n" + 
+					"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" + 
 					"Accept-Language: en-US,en;q=0.5\r\n" + 
-					"Referer: https://oms.meizu.com:8443/cas/login?service=http%3A%2F%2Foms.meizu.com%2Flogin.action\r\n" + 
-					"Cookie: JSESSIONID=9CA93BDD402AD7AA41962C577874B105; MZ_STORE_UUID=7508ed10-fa01-473f-9c1e-20fb05abe416; tj_coid=6391ea46eb6c0d45226b205940b0f353; CSRF_ID=3f7c2d42-8fe1-47e8-95b5-d2a129d9727d; MEIZUSTORECARTCOUNT=%7B%22c%22%3A0%2C%22t%22%3A1509602002356%2C%22s%22%3Afalse%7D\r\n" + 
+					"Accept-Encoding: gzip, deflate\r\n" + 
 					"Connection: close\r\n" + 
-					"Cache-Control: max-age=0\r\n" + 
+					"Upgrade-Insecure-Requests: 1\r\n" + 
+					"\r\n" + 
 					"";
-			RequestHelper x = new RequestHelper();
-			x.httpservice = httpservice;
-			x.raws =raws;
-			x.parser();
-			byte[] bytes =x.dorequest();
-			System.out.println(x.writeImageToDisk(bytes));
+			System.out.println(download(httpservice,raws2));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static String download(String httpService,String raws) {
+		RequestHelper x = new RequestHelper();
+		x.httpservice = httpService;
+		x.raws =raws;
+		x.parser();
+		byte[] bytes =null;
+		try {
+			bytes = x.dorequest();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.getMessage();
+		}
+		String path = x.writeImageToDisk(bytes);
+		return path;
 	}
 	
 	public byte[] readStream(InputStream inStream) throws Exception { //this method has problem, image only display half
@@ -82,7 +100,7 @@ public class RequestHelper {
     public static byte[] readInputStream(InputStream inStream) throws Exception{  
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();  
         byte[] buffer = new byte[1024];  
-        int len = 0;  
+        int len = 0;
         while( (len=inStream.read(buffer)) != -1 ){  
             outStream.write(buffer, 0, len);  
         }  
@@ -92,29 +110,17 @@ public class RequestHelper {
     
     public String writeImageToDisk(byte[] img){
         try {
-        	String imgName = this.host+System.currentTimeMillis();
+            if(fileType == null) {
+		    	fileType ="jpg";
+            }
+        	String imgName =  System.currentTimeMillis()+this.host+"."+fileType;
             File file = new File(imgName);
             FileOutputStream fops = new FileOutputStream(file);  
-            fops.write(img);  
-            //fops.flush();  
+            fops.write(img);
+            //fops.flush();
             fops.close();
-            if(fileType == null) {
-            	fileType = imageType.getPicType(imgName);
-            }
 		    
-		    String newName = null;
-		    if(fileType.equals("unknown")) {
-		    	newName =imgName +".jpg";
-		    }else {
-		    	newName = imgName +"."+fileType;
-		    }
-		    System.out.println(newName);
-		    File oldfile = new File(imgName);
-		    File newfile = new File(newName);
-		    oldfile.renameTo(newfile);
-		    //String newFileName = newfile.getName();
-		    
-            return newName;
+            return imgName;
         } catch (Exception e) {  
             e.printStackTrace();
         }  
@@ -171,8 +177,10 @@ public class RequestHelper {
                 SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");    
                 sslContext.init(null, tm, new java.security.SecureRandom());    
 
-                SSLSocketFactory ssf = sslContext.getSocketFactory();      
-                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();    
+                SSLSocketFactory ssf = sslContext.getSocketFactory();
+                //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
+                //HttpsURLConnection conn = (HttpsURLConnection) url.openConnection(proxy);   
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();   
                 conn.setSSLSocketFactory(ssf);  
                 for (Map.Entry<String, String> entry : this.headers.entrySet()) {
                 	conn.addRequestProperty(entry.getKey(),entry.getValue());
@@ -180,7 +188,7 @@ public class RequestHelper {
                 }
                 conn.setRequestMethod(this.method);  
                 conn.setConnectTimeout(5 * 1000);
-                conn.setReadTimeout(8*1000);
+                conn.setReadTimeout(10*1000);
                 InputStream inStream = conn.getInputStream();
                 fileType= conn.getContentType().substring(conn.getContentType().indexOf("/")+1, conn.getContentType().indexOf(";"));
                 byte[] btImg = readInputStream(inStream);
@@ -188,6 +196,8 @@ public class RequestHelper {
             }
             else {
             	URL url = new URL(this.strurl);
+            	//Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
+            	//HttpURLConnection conn = (HttpURLConnection)url.openConnection(proxy);
             	HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                 for (Map.Entry<String, String> entry : this.headers.entrySet()) {
                 	conn.addRequestProperty(entry.getKey(),entry.getValue());
@@ -195,7 +205,7 @@ public class RequestHelper {
                 }
                 conn.setRequestMethod(this.method);  
                 conn.setConnectTimeout(5 * 1000);
-                conn.setReadTimeout(8*1000);
+                conn.setReadTimeout(10*1000);
                 InputStream inStream = conn.getInputStream();
                 fileType= conn.getContentType().substring(conn.getContentType().indexOf("/")+1, conn.getContentType().indexOf(";"));
                 byte[] btImg = readInputStream(inStream);
