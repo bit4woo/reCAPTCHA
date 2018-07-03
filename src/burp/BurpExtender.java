@@ -32,13 +32,13 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 {	
 	private GUI GUI;
     private static IBurpExtenderCallbacks callbacks;
-    private IExtensionHelpers helpers;
+    private static IExtensionHelpers helpers;
     
     public PrintWriter stdout;//现在这里定义变量，再在registerExtenderCallbacks函数中实例化，如果都在函数中就只是局部变量，不能在这实例化，因为要用到其他参数。
-    private String ExtenderName = "reCAPTCHA v0.6 by bit4";
+    private String ExtenderName = "reCAPTCHA v0.7 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
 	
-	private String imgName;
+	private static String imgName;
     public IHttpRequestResponse imgMessageInfo;
     IMessageEditor imageMessageEditor;
     
@@ -78,19 +78,23 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
     	}
     	return domain ;
 	}
-	public String getFileType(IResponseInfo analyzeResponse) {
+	public static String getFileType(IResponseInfo analyzeResponse) {
 		String fileType = null;    
 	    List<String> headers = analyzeResponse.getHeaders();
 
 	    for(String header:headers) {
 	    	if(header.toLowerCase().startsWith("content-type")) {
-	    		fileType= header.substring(header.indexOf("/")+1, header.indexOf(";"));
+                try {
+                	fileType= header.substring(header.indexOf("/")+1, header.indexOf(";"));
+                }catch(Exception e) {
+                	fileType= header.substring(header.indexOf("/")+1, header.length());
+                }
 	    	}
 	    }
 	    return fileType;
 	}
 	
-	public String getImage(IHttpRequestResponse messageInfo) {
+	public static String getImage(IHttpRequestResponse messageInfo) {
 		if (messageInfo != null) {
 			IHttpService service = messageInfo.getHttpService();
 			byte[] request =  messageInfo.getRequest();

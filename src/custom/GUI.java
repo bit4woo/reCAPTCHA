@@ -37,6 +37,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -83,7 +87,7 @@ public class GUI extends JPanel {//change 1 for burp
 	private JLabel label_showimg;
 	public JTextField imgHttpService;
 	
-	public IHttpRequestResponse MessageInfo;// always needed 
+	public IHttpRequestResponse MessageInfo =null;// always needed 
 	public IMessageEditor imageMessageEditor;
 	public IBurpExtenderCallbacks callbacks;//needed by method 2
 	public IExtensionHelpers helpers;//needed by method 2
@@ -164,18 +168,25 @@ public class GUI extends JPanel {//change 1 for burp
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					
 					//******method one: self-applied method RequestHelper*****
 					//String httpservice =MessageInfo.getHttpService().toString();
 					//String httpRaws =new String( MessageInfo.getRequest());
-					String httpservice = imgHttpService.getText();
-					String httpRaws = imgRequestRaws.getText();
-					String imgpath = RequestHelper.download(httpservice, httpRaws);
+					//String httpservice = imgHttpService.getText();
+					//String httpRaws = imgRequestRaws.getText();
+					//String imgpath = RequestHelper.download(httpservice, httpRaws);
+					
 					
 					//******method two: imageDownloader*****
 					//String imgpath = imageDownloader.download(callbacks, helpers, MessageInfo.getHttpService(), MessageInfo.getRequest());
 					
+					
 					//******method three: getImage in BurpExtender*****
-					//String imgpath = BurpExtender.getImage(MessageInfo);
+					MyThread1 t1 = new MyThread1(MessageInfo);
+					ExecutorService executor = Executors.newCachedThreadPool();
+					Future<String> futureCall  =executor.submit(t1);
+					String imgpath = futureCall.get();
+					
 					//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
 					//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
 					
@@ -346,4 +357,30 @@ public class GUI extends JPanel {//change 1 for burp
 		}
 		return result;
 	}
+}
+
+
+class MyThread implements Runnable{
+	//this can let me call getImage(make http request in GUI),but can't return value
+	private IHttpRequestResponse MessageInfo =null;
+	MyThread(IHttpRequestResponse MessageInfo,JTextField imgPath){
+		this.MessageInfo = MessageInfo;
+	}
+    @Override
+    public synchronized  void  run() {
+    	String imgpath = BurpExtender.getImage(MessageInfo);
+    }
+}
+
+class MyThread1 implements Callable<String> {
+	//can return vaule!!
+	private IHttpRequestResponse MessageInfo =null;
+	MyThread1(IHttpRequestResponse MessageInfo){
+		this.MessageInfo = MessageInfo;
+	}
+    @Override
+    public String call() throws Exception {
+        // Here your implementation
+        return BurpExtender.getImage(MessageInfo);
+    }
 }
