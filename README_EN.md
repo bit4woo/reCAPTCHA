@@ -46,3 +46,7 @@ intruder running like below:
 ### **Log**
 
 2017-11-01: first demo release.
+
+2018-07-02: support [GSA Captcha Breaker]
+
+201808-07: support https://www.jsdati.com

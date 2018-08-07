@@ -69,6 +69,10 @@ payload 2 的配置和情况一中的配置完全一样。
 
 2017-11-01：第一个demo版本发布。
 
+2018-07-02：支持GSA Captcha Breaker
+
+2018-08-07：支持https://www.jsdati.com
+
 **作者**
 
 [bit4](http://www.code2sec.com/)@[勾陈安全](http://www.polaris-lab.com/)
