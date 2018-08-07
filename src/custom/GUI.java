@@ -70,7 +70,8 @@ import custom.myYunSu;
 public class GUI extends JPanel {//change 1 for burp
 	
     private String github = "https://github.com/bit4woo/reCAPTCHA";
-    private String Abouttypeid = "http://www.ysdm.net/home/PriceType";
+    private String helpurl = github;
+    
 
 	private JPanel contentPane;
 	private JPanel panel_2;
@@ -246,14 +247,14 @@ public class GUI extends JPanel {//change 1 for burp
 				}
 		});
 		
-		lblAboutTypeid = new JLabel("About Typeid ?");
+		lblAboutTypeid = new JLabel("Help?");
 		lblAboutTypeid.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAboutTypeid.setFont(new Font("ËÎÌו", Font.BOLD, 12));
 		lblAboutTypeid.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					URI uri = new URI(Abouttypeid);
+					URI uri = new URI(helpurl);
 					Desktop desktop = Desktop.getDesktop();
 					if(Desktop.isDesktopSupported()&&desktop.isSupported(Desktop.Action.BROWSE)){
 						desktop.browse(uri);
@@ -289,17 +290,27 @@ public class GUI extends JPanel {//change 1 for burp
 		APIcomboBox = new JComboBox<String>();
 		APIcomboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				if (APIcomboBox.getSelectedItem().equals("http://www.ysdm.net")) {
+				if (APIcomboBox.getSelectedItem().equals("http://www.ysdm.net"))
+				{
 					APIRequestRaws.setText("username=%s&password=%s&typeid=%s");
-				}else if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
+					helpurl="http://www.ysdm.net/home/PriceType";
+				}
+				else if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
 				{
 					APIRequestRaws.setText("http://127.0.0.1");
+					helpurl="https://www.gsa-online.de/gsa-docu/";
+				}
+				else if (APIcomboBox.getSelectedItem().equals("https://www.jsdati.com"))
+				{
+					APIRequestRaws.setText("username=%s&password=%s&captchaType=%s");
+					helpurl = "https://www.jsdati.com/docs/price";
 				}
 			}
 		});
 		panel_4.add(APIcomboBox, BorderLayout.NORTH);
 		APIcomboBox.addItem("GSA Captcha Breaker");
 		APIcomboBox.addItem("http://www.ysdm.net");
+		APIcomboBox.addItem("https://www.jsdati.com");
 		
 
 		
@@ -351,6 +362,10 @@ public class GUI extends JPanel {//change 1 for burp
 			{	
 				String httpService = APIRequestRaws.getText();
 				result = myGSA.getCode(imgpath, httpService);
+			}else if (Method.equals("https://www.jsdati.com")) 
+			{
+				String para = APIRequestRaws.getText();
+				result = myjsdati.getCode(imgpath, para);
 			}
 		} else {
 			result = "image path is null!";
