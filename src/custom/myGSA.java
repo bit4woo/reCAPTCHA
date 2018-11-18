@@ -51,9 +51,9 @@ public class myGSA {
 		return code;
     }
     /**
-	 * ´ğÌâ
-	 * @param url 			ÇëÇóURL£¬²»´ø²ÎÊı Èç£ºhttp://127.0.0.1/gsa_test.gsa
-	 * @param data			Í¼Æ¬¶ş½øÖÆÁ÷
+	 * ç­”é¢˜
+	 * @param url 			è¯·æ±‚URLï¼Œä¸å¸¦å‚æ•° å¦‚ï¼šhttp://127.0.0.1/gsa_test.gsa
+	 * @param data			å›¾ç‰‡äºŒè¿›åˆ¶æµ
 
 	 * @throws IOException
 	 */

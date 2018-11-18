@@ -10,11 +10,11 @@ public class imageType {
     public static final String TYPE_UNKNOWN = "unknown";
     
     public static void main(String[] args) {
-    	System.out.println("Í¼Æ¬¸ñÊ½1£º " + getPicType("E:\\wolaidai\\==wininit==\\work\\www.cnhww.com1509529014421.jpg"));
+    	System.out.println("å›¾ç‰‡æ ¼å¼1ï¼š " + getPicType("E:\\wolaidai\\==wininit==\\work\\www.cnhww.com1509529014421.jpg"));
     }
 
 /**
-     * byteÊı×é×ª»»³É16½øÖÆ×Ö·û´®
+     * byteæ•°ç»„è½¬æ¢æˆ16è¿›åˆ¶å­—ç¬¦ä¸²
      * @param src
      * @return
      */
@@ -36,7 +36,7 @@ public class imageType {
     
 
     /**
-     * ¸ù¾İÎÄ¼şÁ÷ÅĞ¶ÏÍ¼Æ¬ÀàĞÍ
+     * æ ¹æ®æ–‡ä»¶æµåˆ¤æ–­å›¾ç‰‡ç±»å‹
      * @param fis
      * @return jpg/png/gif/bmp
      */
@@ -48,7 +48,7 @@ public class imageType {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        //¶ÁÈ¡ÎÄ¼şµÄÇ°¼¸¸ö×Ö½ÚÀ´ÅĞ¶ÏÍ¼Æ¬¸ñÊ½
+        //è¯»å–æ–‡ä»¶çš„å‰å‡ ä¸ªå­—èŠ‚æ¥åˆ¤æ–­å›¾ç‰‡æ ¼å¼
         byte[] b = new byte[4];
         try {
             fis.read(b, 0, b.length);

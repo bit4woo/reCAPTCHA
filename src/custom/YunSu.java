@@ -19,9 +19,9 @@ import javax.imageio.ImageIO;
 public class YunSu {
 	
 	/**
-	 * ×Ö·û´®MD5¼ÓÃÜ
-	 * @param s Ô­Ê¼×Ö·û´®
-	 * @return  ¼ÓÃÜºó×Ö·û´®
+	 * å­—ç¬¦ä¸²MD5åŠ å¯†
+	 * @param s åŸå§‹å­—ç¬¦ä¸²
+	 * @return  åŠ å¯†åå­—ç¬¦ä¸²
 	 */
 	public final static String MD5(String s) {
 		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -47,10 +47,10 @@ public class YunSu {
 	}
 	
 	/**
-	 * Í¨ÓÃURLÇëÇó·½·¨
-	 * @param url 		ÇëÇóURL£¬²»´ø²ÎÊı Èç£ºhttp://api.ysdm.net/register.xml
-	 * @param param 	ÇëÇó²ÎÊı£¬Èç£ºusername=test&password=1
-	 * @return 			Æ½Ì¨·µ»Ø½á¹ûXMLÑùÊ½ 
+	 * é€šç”¨URLè¯·æ±‚æ–¹æ³•
+	 * @param url 		è¯·æ±‚URLï¼Œä¸å¸¦å‚æ•° å¦‚ï¼šhttp://api.ysdm.net/register.xml
+	 * @param param 	è¯·æ±‚å‚æ•°ï¼Œå¦‚ï¼šusername=test&password=1
+	 * @return 			å¹³å°è¿”å›ç»“æœXMLæ ·å¼ 
 	 * @throws IOException
 	 */
 	public static String httpRequestData(String url, String param)
@@ -85,11 +85,11 @@ public class YunSu {
 	}
 
 	/**
-	 * ´ğÌâ
-	 * @param url 			ÇëÇóURL£¬²»´ø²ÎÊı Èç£ºhttp://api.ysdm.net/create.xml
-	 * @param param			ÇëÇó²ÎÊı£¬Èç£ºusername=test&password=1
-	 * @param data			Í¼Æ¬¶ş½øÖÆÁ÷
-	 * @return				Æ½Ì¨·µ»Ø½á¹ûXMLÑùÊ½ 
+	 * ç­”é¢˜
+	 * @param url 			è¯·æ±‚URLï¼Œä¸å¸¦å‚æ•° å¦‚ï¼šhttp://api.ysdm.net/create.xml
+	 * @param param			è¯·æ±‚å‚æ•°ï¼Œå¦‚ï¼šusername=test&password=1
+	 * @param data			å›¾ç‰‡äºŒè¿›åˆ¶æµ
+	 * @return				å¹³å°è¿”å›ç»“æœXMLæ ·å¼ 
 	 * @throws IOException
 	 */
 	public static String httpPostImage(String url, String param,
@@ -106,7 +106,7 @@ public class YunSu {
 		con = (HttpURLConnection) u.openConnection();
 		con.setRequestMethod("POST");
 		//con.setReadTimeout(95000);   
-		con.setConnectTimeout(95000); //´ËÖµÓëtimeout²ÎÊıÏà¹Ø£¬Èç¹ûtimeout²ÎÊıÊÇ90Ãë£¬ÕâÀï¾ÍÊÇ95000£¬½¨Òé¶à5Ãë
+		con.setConnectTimeout(95000); //æ­¤å€¼ä¸timeoutå‚æ•°ç›¸å…³ï¼Œå¦‚æœtimeoutå‚æ•°æ˜¯90ç§’ï¼Œè¿™é‡Œå°±æ˜¯95000ï¼Œå»ºè®®å¤š5ç§’
 		con.setDoOutput(true);
 		con.setDoInput(true);
 		con.setUseCaches(true);
@@ -148,10 +148,10 @@ public class YunSu {
 	}
 
 	/**
-	 * »ñÈ¡ÓÃ»§ĞÅÏ¢
-	 * @param username	ÓÃ»§Ãû
-	 * @param password	ÃÜÂë
-	 * @return			Æ½Ì¨·µ»Ø½á¹ûXMLÑùÊ½ 
+	 * è·å–ç”¨æˆ·ä¿¡æ¯
+	 * @param username	ç”¨æˆ·å
+	 * @param password	å¯†ç 
+	 * @return			å¹³å°è¿”å›ç»“æœXMLæ ·å¼ 
 	 * @throws IOException
 	 */
 	public static String getInfo(String username, String password) {
@@ -161,17 +161,17 @@ public class YunSu {
 			result = YunSu.httpRequestData(
 					"http://api.ysdm.net/info.xml", param);
 		} catch (IOException e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		return result;
 	}
 	
 	/**
-	 * ×¢²áÓÃ»§
-	 * @param username	ÓÃ»§Ãû
-	 * @param password	ÃÜÂë
-	 * @param email		ÓÊÏä
-	 * @return			Æ½Ì¨·µ»Ø½á¹ûXMLÑùÊ½ 
+	 * æ³¨å†Œç”¨æˆ·
+	 * @param username	ç”¨æˆ·å
+	 * @param password	å¯†ç 
+	 * @param email		é‚®ç®±
+	 * @return			å¹³å°è¿”å›ç»“æœXMLæ ·å¼ 
 	 * @throws IOException
 	 */
 	public static String register(String username, String password, String email) {
@@ -181,17 +181,17 @@ public class YunSu {
 			result = YunSu.httpRequestData(
 					"http://api.ysdm.net/register.xml", param);
 		} catch (IOException e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		return result;
 	}
 
 	/**
-	 * ³äÖµ
-	 * @param username	ÓÃ»§Ãû
-	 * @param id		¿¨ºÅ
-	 * @param password	ÃÜÂë
-	 * @return			Æ½Ì¨·µ»Ø½á¹ûXMLÑùÊ½ 
+	 * å……å€¼
+	 * @param username	ç”¨æˆ·å
+	 * @param id		å¡å·
+	 * @param password	å¯†ç 
+	 * @return			å¹³å°è¿”å›ç»“æœXMLæ ·å¼ 
 	 * @throws IOException
 	 */
 	public static String recharge(String username, String id, String password) {
@@ -203,21 +203,21 @@ public class YunSu {
 			result = YunSu.httpRequestData(
 					"http://api.ysdm.net/recharge.xml", param);
 		} catch (IOException e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		return result;
 	}
 	
 	/**
-	 * ´ğÌâ(URL) 
-	 * @param username	ÓÃ»§Ãû
-	 * @param password	ÓÃ»§ÃÜÂë¡£(Ö§³Ö32Î»MD5)
-	 * @param typeid	ÌâÄ¿ÀàĞÍ
-	 * @param timeout	ÈÎÎñ³¬Ê±Ê±¼ä£¬Ä¬ÈÏÓë×îĞ¡ÖµÎª60Ãë¡£
-	 * @param softid	Èí¼şID£¬¿ª·¢Õß¿É×ÔĞĞÉêÇë¡£
-	 * @param softkey	Èí¼şKEY£¬¿ª·¢Õß¿É×ÔĞĞÉêÇë¡£
-	 * @param imageurl	Ô¶³ÌÍ¼Æ¬URL
-	 * @return			Æ½Ì¨·µ»Ø½á¹ûXMLÑùÊ½ 
+	 * ç­”é¢˜(URL) 
+	 * @param username	ç”¨æˆ·å
+	 * @param password	ç”¨æˆ·å¯†ç ã€‚(æ”¯æŒ32ä½MD5)
+	 * @param typeid	é¢˜ç›®ç±»å‹
+	 * @param timeout	ä»»åŠ¡è¶…æ—¶æ—¶é—´ï¼Œé»˜è®¤ä¸æœ€å°å€¼ä¸º60ç§’ã€‚
+	 * @param softid	è½¯ä»¶IDï¼Œå¼€å‘è€…å¯è‡ªè¡Œç”³è¯·ã€‚
+	 * @param softkey	è½¯ä»¶KEYï¼Œå¼€å‘è€…å¯è‡ªè¡Œç”³è¯·ã€‚
+	 * @param imageurl	è¿œç¨‹å›¾ç‰‡URL
+	 * @return			å¹³å°è¿”å›ç»“æœXMLæ ·å¼ 
 	 * @throws IOException
 	 */
 	public static String createByUrl(String username, String password,
@@ -245,18 +245,18 @@ public class YunSu {
 	
 			
 		} catch(Exception e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		return result;
 	}
 	
 	/**
-	 * ÉÏ±¨´íÌâ
-	 * @param username	ÓÃ»§Ãû
-	 * @param password	ÓÃ»§ÃÜÂë
-	 * @param softId	Èí¼şID
-	 * @param softkey	Èí¼şKEY
-	 * @param id		±¨´íÌâÄ¿µÄID
+	 * ä¸ŠæŠ¥é”™é¢˜
+	 * @param username	ç”¨æˆ·å
+	 * @param password	ç”¨æˆ·å¯†ç 
+	 * @param softId	è½¯ä»¶ID
+	 * @param softkey	è½¯ä»¶KEY
+	 * @param id		æŠ¥é”™é¢˜ç›®çš„ID
 	 * @return
 	 * @throws IOException
 	 */
@@ -271,21 +271,21 @@ public class YunSu {
 			result = YunSu.httpRequestData("http://api.ysdm.net/reporterror.xml",
 					param);
 		} catch (IOException e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		
 		return result;
 	}
 	
 	/**
-	 * ÉÏ´«ÌâÄ¿Í¼Æ¬·µ»Ø½á¹û	
-	 * @param username		ÓÃ»§Ãû
-	 * @param password		ÃÜÂë
-	 * @param typeid		ÌâÄ¿ÀàĞÍ
-	 * @param timeout		ÈÎÎñ³¬Ê±Ê±¼ä
-	 * @param softid		Èí¼şID
-	 * @param softkey		Èí¼şKEY
-	 * @param filePath		ÌâÄ¿½ØÍ¼»òÔ­Ê¼Í¼¶ş½øÖÆÊı¾İÂ·¾¶
+	 * ä¸Šä¼ é¢˜ç›®å›¾ç‰‡è¿”å›ç»“æœ	
+	 * @param username		ç”¨æˆ·å
+	 * @param password		å¯†ç 
+	 * @param typeid		é¢˜ç›®ç±»å‹
+	 * @param timeout		ä»»åŠ¡è¶…æ—¶æ—¶é—´
+	 * @param softid		è½¯ä»¶ID
+	 * @param softkey		è½¯ä»¶KEY
+	 * @param filePath		é¢˜ç›®æˆªå›¾æˆ–åŸå§‹å›¾äºŒè¿›åˆ¶æ•°æ®è·¯å¾„
 	 * @return
 	 * @throws IOException
 	 */
@@ -309,7 +309,7 @@ public class YunSu {
 				if (data.length > 0)	result = YunSu.httpPostImage("http://api.ysdm.net/create.xml", param, data);
 			}
 		} catch(Exception e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		
 		
@@ -327,7 +327,7 @@ public class YunSu {
 		try {
 			result = YunSu.httpPostImage("http://api.ysdm.net/create.xml", param, byteArr);
 		} catch(Exception e) {
-			result = "Î´ÖªÎÊÌâ";
+			result = "æœªçŸ¥é—®é¢˜";
 		}
 		
 		

@@ -6,10 +6,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,62 +16,38 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.FlowLayout;
 import javax.swing.JSplitPane;
-import java.awt.Component;
 import java.awt.Desktop;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
 import javax.swing.ImageIcon;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import burp.BurpExtender;
-import burp.IBurpExtenderCallbacks;
-import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
-import burp.IHttpService;
 import burp.IMessageEditor;
-import burp.ITempFile;
-import custom.RequestHelper;
-import custom.myYunSu;
 
 
-
-//////////////3 changes need to do, when debugging change to product!!!////////////////////
-
-//change 1
-//public class GUI extends JFrame { //change 1 for test
-public class GUI extends JPanel {//change 1 for burp
+public class GUI extends JFrame {
 	
     private String github = "https://github.com/bit4woo/reCAPTCHA";
     private String helpurl = github;
     
 
-	private JPanel contentPane;
 	private JPanel panel_2;
 	private JLabel lblNewLabel_2;
 	private JSplitPane splitPane;
@@ -90,9 +64,6 @@ public class GUI extends JPanel {//change 1 for burp
 	
 	public IHttpRequestResponse MessageInfo =null;// always needed 
 	public IMessageEditor imageMessageEditor;
-	public IBurpExtenderCallbacks callbacks;//needed by method 2
-	public IExtensionHelpers helpers;//needed by method 2
-	public BurpExtender BurpExtender;//needed by method 3
 	
 	
 	private JPanel panel_IMessage;
@@ -126,14 +97,12 @@ public class GUI extends JPanel {//change 1 for burp
 	 */
 	public GUI() {
 	    
-	    //change 2
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//change2 for test
-		//setBounds(100, 100, 930, 497);//change2 for test
-		contentPane = this; //change3 for burp
-		//JPanel contentPane = new JPanel();////change3 for test
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 930, 497);
+		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		//setContentPane(contentPane);//change2 for test
+		setContentPane(contentPane);
 		
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.5);
@@ -155,17 +124,6 @@ public class GUI extends JPanel {//change 1 for burp
 		
 		btnRequest = new JButton("Get Image");
 		panel_6.add(btnRequest);
-		
-		panel_7 = new JPanel();
-		panel.add(panel_7, BorderLayout.CENTER);
-		
-		label_showimg = new JLabel("");
-		panel_7.add(label_showimg);
-		label_showimg.setHorizontalAlignment(SwingConstants.RIGHT);
-		
-		imgPath = new JTextField();
-		panel_7.add(imgPath);
-		imgPath.setColumns(30);
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -205,6 +163,18 @@ public class GUI extends JPanel {//change 1 for burp
 			}
 		});
 		
+		panel_7 = new JPanel();
+		panel.add(panel_7, BorderLayout.CENTER);
+		
+		label_showimg = new JLabel("");
+		panel_7.add(label_showimg);
+		label_showimg.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		imgPath = new JTextField();
+		panel_7.add(imgPath);
+		imgPath.setColumns(30);
+		
+		
 		panel_IMessage = new JPanel();
 		panel_IMessage.setBorder(new LineBorder(new Color(0, 0, 0)));
 		splitPane_1.setLeftComponent(panel_IMessage);
@@ -232,7 +202,7 @@ public class GUI extends JPanel {//change 1 for burp
 		
 		APIResulttextArea = new JTextArea();
 		APIResulttextArea.setWrapStyleWord(true);
-		APIResulttextArea.setFont(new Font("ËÎÌå", Font.BOLD, 12));//use this to display Chinese correctly.!!!
+		APIResulttextArea.setFont(new Font("ïž©ïž¬ïžª×•", Font.BOLD, 12));//use this to display Chinese correctly.!!!
 		panel_1.add(APIResulttextArea);
 		
 		panel_5 = new JPanel();
@@ -249,7 +219,7 @@ public class GUI extends JPanel {//change 1 for burp
 		
 		lblAboutTypeid = new JLabel("Help?");
 		lblAboutTypeid.setHorizontalAlignment(SwingConstants.LEFT);
-		lblAboutTypeid.setFont(new Font("ËÎÌå", Font.BOLD, 12));
+		lblAboutTypeid.setFont(new Font("ïž©ïž¬ïžª×•", Font.BOLD, 12));
 		lblAboutTypeid.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -260,7 +230,6 @@ public class GUI extends JPanel {//change 1 for burp
 						desktop.browse(uri);
 					}
 				} catch (Exception e2) {
-					// TODO: handle exception
 					//callbacks.printError(e2.getMessage());
 				}
 				
@@ -321,7 +290,7 @@ public class GUI extends JPanel {//change 1 for burp
 		contentPane.add(panel_2, BorderLayout.SOUTH);
 		
 		lblNewLabel_2 = new JLabel("    "+github);
-		lblNewLabel_2.setFont(new Font("ËÎÌå", Font.BOLD, 12));
+		lblNewLabel_2.setFont(new Font("ïž©ïž¬ïžª×•", Font.BOLD, 12));
 		lblNewLabel_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -332,7 +301,6 @@ public class GUI extends JPanel {//change 1 for burp
 						desktop.browse(uri);
 					}
 				} catch (Exception e2) {
-					// TODO: handle exception
 					//callbacks.printError(e2.getMessage());
 				}
 				
@@ -383,7 +351,7 @@ class MyThread implements Runnable{
 	}
     @Override
     public synchronized  void  run() {
-    	String imgpath = BurpExtender.getImage(MessageInfo);
+    	BurpExtender.getImage(MessageInfo);
     }
 }
 

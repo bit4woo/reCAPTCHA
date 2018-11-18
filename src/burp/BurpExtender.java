@@ -28,13 +28,12 @@ import custom.RequestHelper;
 import custom.myYunSu;
 import custom.imageType;
 
-public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator
+public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMenuFactory, IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator
 {	
-	private GUI GUI;
     private static IBurpExtenderCallbacks callbacks;
     private static IExtensionHelpers helpers;
     
-    public PrintWriter stdout;//ÏÖÔÚÕâÀï¶¨Òå±äÁ¿£¬ÔÙÔÚregisterExtenderCallbacksº¯ÊıÖĞÊµÀı»¯£¬Èç¹û¶¼ÔÚº¯ÊıÖĞ¾ÍÖ»ÊÇ¾Ö²¿±äÁ¿£¬²»ÄÜÔÚÕâÊµÀı»¯£¬ÒòÎªÒªÓÃµ½ÆäËû²ÎÊı¡£
+    public PrintWriter stdout;//ç°åœ¨è¿™é‡Œå®šä¹‰å˜é‡ï¼Œå†åœ¨registerExtenderCallbackså‡½æ•°ä¸­å®ä¾‹åŒ–ï¼Œå¦‚æœéƒ½åœ¨å‡½æ•°ä¸­å°±åªæ˜¯å±€éƒ¨å˜é‡ï¼Œä¸èƒ½åœ¨è¿™å®ä¾‹åŒ–ï¼Œå› ä¸ºè¦ç”¨åˆ°å…¶ä»–å‚æ•°ã€‚
     private String ExtenderName = "reCAPTCHA v0.8 by bit4";
     private String github = "https://github.com/bit4woo/reCAPTCHA";
 	
@@ -50,14 +49,14 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
     	stdout.println(github);
         this.callbacks = callbacks;
         helpers = callbacks.getHelpers();
-        callbacks.setExtensionName(ExtenderName); //²å¼şÃû³Æ
-        //callbacks.registerHttpListener(this); //Èç¹ûÃ»ÓĞ×¢²á£¬ÏÂÃæµÄprocessHttpMessage·½·¨ÊÇ²»»áÉúĞ§µÄ¡£´¦ÀíÇëÇóºÍÏìÓ¦°üµÄ²å¼ş£¬Õâ¸öÓ¦¸ÃÊÇ±ØÒªµÄ
+        callbacks.setExtensionName(ExtenderName); //æ’ä»¶åç§°
+        //callbacks.registerHttpListener(this); //å¦‚æœæ²¡æœ‰æ³¨å†Œï¼Œä¸‹é¢çš„processHttpMessageæ–¹æ³•æ˜¯ä¸ä¼šç”Ÿæ•ˆçš„ã€‚å¤„ç†è¯·æ±‚å’Œå“åº”åŒ…çš„æ’ä»¶ï¼Œè¿™ä¸ªåº”è¯¥æ˜¯å¿…è¦çš„
         callbacks.registerContextMenuFactory(this);
         callbacks.registerIntruderPayloadGeneratorFactory(this);
         addMenuTab();        
     }
 
-/////////////////////////////////////////×Ô¶¨Òåº¯Êı/////////////////////////////////////////////////////////////
+/////////////////////////////////////////è‡ªå®šä¹‰å‡½æ•°/////////////////////////////////////////////////////////////
     public static IBurpExtenderCallbacks getBurpCallbacks() {
         return callbacks;
     }
@@ -104,7 +103,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 			int BodyOffset = helpers.analyzeResponse(response).getBodyOffset();
 			int body_length = response.length -BodyOffset;
 			byte[] body = subBytes(response,BodyOffset,body_length);
-			//ÕâÀïÖ®Ç°Óöµ½Ò»¸ö¿Ó£ºÏÖ½«byte[]×ª»»Îªstring£¬È¡substringºó×ª»»»ØÀ´£¬ÕâÑùÊÇÓĞÎÊÌâµÄ¡£
+			//è¿™é‡Œä¹‹å‰é‡åˆ°ä¸€ä¸ªå‘ï¼šç°å°†byte[]è½¬æ¢ä¸ºstringï¼Œå–substringåè½¬æ¢å›æ¥ï¼Œè¿™æ ·æ˜¯æœ‰é—®é¢˜çš„ã€‚
 			
 			String fileType =getFileType(helpers.analyzeResponse(messageInfo.getResponse())); 
 			if(fileType==null) {
@@ -115,9 +114,9 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 		    //stdout.println(imgName);
 		    try {
 		    	File imageFile = new File(imgName);
-		        //´´½¨Êä³öÁ÷  
+		        //åˆ›å»ºè¾“å‡ºæµ  
 		        FileOutputStream outStream = new FileOutputStream(imageFile);  
-		        //Ğ´ÈëÊı¾İ  
+		        //å†™å…¥æ•°æ®  
 				outStream.write(body);
 				outStream.close();
 			} catch (IOException e) {
@@ -130,36 +129,31 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 		}
 	}
 	
-///////////////////////////////////×Ô¶¨Òåº¯Êı////////////////////////////////////////////////////////////
+///////////////////////////////////è‡ªå®šä¹‰å‡½æ•°////////////////////////////////////////////////////////////
 	
 	
-///////////////////////////////////ÒÔÏÂÊÇ¸÷ÖÖburp±ØĞëµÄ·½·¨ --start//////////////////////////////////////////
+///////////////////////////////////ä»¥ä¸‹æ˜¯å„ç§burpå¿…é¡»çš„æ–¹æ³• --start//////////////////////////////////////////
     public void addMenuTab()
     {
       SwingUtilities.invokeLater(new Runnable()
       {
         public void run()
         {
-          BurpExtender.this.GUI = new GUI();
-          BurpExtender.this.callbacks.addSuiteTab(BurpExtender.this); //ÕâÀïµÄBurpExtender.thisÊµÖÊÊÇÖ¸ITab¶ÔÏó£¬Ò²¾ÍÊÇgetUiComponent()ÖĞµÄcontentPane.Õâ¸ö²ÎÊıÓÉCGUI()º¯Êı³õÊ¼»¯¡£
-          //Èç¹ûÕâÀï±¨java.lang.NullPointerException: Component cannot be null ´íÎó£¬ĞèÒªÅÅ²écontentPaneµÄ³õÊ¼»¯ÊÇ·ñÕıÈ·¡£
-          
-          BurpExtender.this.GUI.BurpExtender = getThis();
+          BurpExtender.this.callbacks.addSuiteTab(BurpExtender.this); //è¿™é‡Œçš„BurpExtender.thiså®è´¨æ˜¯æŒ‡ITabå¯¹è±¡ï¼Œä¹Ÿå°±æ˜¯getUiComponent()ä¸­çš„contentPane.è¿™ä¸ªå‚æ•°ç”±CGUI()å‡½æ•°åˆå§‹åŒ–ã€‚
+          //å¦‚æœè¿™é‡ŒæŠ¥java.lang.NullPointerException: Component cannot be null é”™è¯¯ï¼Œéœ€è¦æ’æŸ¥contentPaneçš„åˆå§‹åŒ–æ˜¯å¦æ­£ç¡®ã€‚
         }
       });
     }
 	
 	
-    //ITab±ØĞëÊµÏÖµÄÁ½¸ö·½·¨
+    //ITabå¿…é¡»å®ç°çš„ä¸¤ä¸ªæ–¹æ³•
 	@Override
 	public String getTabCaption() {
-		// TODO Auto-generated method stub
 		return ("reCAPTCHA");
 	}
 	@Override
 	public Component getUiComponent() {
-		// TODO Auto-generated method stub
-		return this.GUI;
+		return this.getContentPane();
 	}
 	public BurpExtender getThis() {
 		return this;
@@ -167,7 +161,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	
 	@Override
 	public List<JMenuItem> createMenuItems(IContextMenuInvocation invocation)
-	{ //ĞèÒªÔÚÇ©Ãû×¢²á£¡£¡callbacks.registerContextMenuFactory(this);
+	{ //éœ€è¦åœ¨ç­¾åæ³¨å†Œï¼ï¼callbacks.registerContextMenuFactory(this);
 	    IHttpRequestResponse[] messages = invocation.getSelectedMessages();
 	    List<JMenuItem> list = new ArrayList<JMenuItem>();
 	    if((messages != null) && (messages.length ==1))
@@ -185,11 +179,11 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	            try
 	            {	
 	            	//stdout.println(new String(imgMessageInfo.getRequest()));
-	            	GUI.MessageInfo = imgMessageInfo;
+	            	MessageInfo = imgMessageInfo;
 	            	
-	            	GUI.imgRequestRaws.setText(new String(imgMessageInfo.getRequest())); //ÔÚGUIÖĞÏÔÊ¾Õâ¸öÇëÇóĞÅÏ¢¡£
+	            	imgRequestRaws.setText(new String(imgMessageInfo.getRequest())); //åœ¨GUIä¸­æ˜¾ç¤ºè¿™ä¸ªè¯·æ±‚ä¿¡æ¯ã€‚
 	            	IHttpService httpservice =imgMessageInfo.getHttpService();
-	            	GUI.imgHttpService.setText(httpservice.toString());
+	            	imgHttpService.setText(httpservice.toString());
 	            	
 	            }
 	            catch (Exception e1)
@@ -204,7 +198,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	}
 	
 	
-	//IIntruderPayloadGeneratorFactory ËùĞèÊµÏÖµÄ2¸öº¯Êı
+	//IIntruderPayloadGeneratorFactory æ‰€éœ€å®ç°çš„2ä¸ªå‡½æ•°
 	@Override
 	public String getGeneratorName() {
 		// TODO Auto-generated method stub
@@ -219,7 +213,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	
 	
 	
-	//IIntruderPayloadGenerator ËùĞèÊµÏÖµÄÈı¸öº¯Êı
+	//IIntruderPayloadGenerator æ‰€éœ€å®ç°çš„ä¸‰ä¸ªå‡½æ•°
 	@Override
 	public boolean hasMorePayloads() {
 		// TODO Auto-generated method stub
@@ -228,14 +222,14 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 	
 	@Override
 	public byte[] getNextPayload(byte[] baseValue) {
-		// »ñÈ¡Í¼Æ¬ÑéÖ¤ÂëµÄÖµ
+		// è·å–å›¾ç‰‡éªŒè¯ç çš„å€¼
 		int times = 0;
 		while(times <=5) {
 			if (imgMessageInfo!=null) {
 				try {					
 					//String imgpath = imageDownloader.download(callbacks, helpers, imgMessageInfo.getHttpService(), imgMessageInfo.getRequest());
 					String imgpath = this.getImage(imgMessageInfo);
-					String code = GUI.getAnswer(imgpath);
+					String code = getAnswer(imgpath);
 					stdout.println(imgpath+" ---- "+code);
 					return code.getBytes();
 				} catch (Exception e) {
@@ -259,5 +253,5 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
 		
 	}
 	
-//////////////////////////////////////////////¸÷ÖÖburp±ØĞëµÄ·½·¨ --end//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////å„ç§burpå¿…é¡»çš„æ–¹æ³• --end//////////////////////////////////////////////////////////////
 }
