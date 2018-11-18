@@ -45,7 +45,6 @@ public class imageType {
 		try {
 			fis = new FileInputStream(new File(imgpath));
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         //读取文件的前几个字节来判断图片格式

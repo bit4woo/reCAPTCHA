@@ -45,7 +45,6 @@ public class myGSA {
 			if(null != fis) fis.close();
 			code = httpPostImage(httpService+"/gsa_test.gsa",data);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return code;

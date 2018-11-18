@@ -81,20 +81,20 @@ public class RequestHelper_stream {
 		   out.write(raws);
 		   out.flush(); 
 		   */
-		   OutputStream test = socket.getOutputStream(); //·¢ËÍÊı¾İ°ü£¬ÒÔ¶ş½øÖÆ¸ñÊ½
+		   OutputStream test = socket.getOutputStream(); //å‘é€æ•°æ®åŒ…ï¼Œä»¥äºŒè¿›åˆ¶æ ¼å¼
 		   test.write(raws);
 		   test.flush();
 		   
-		   InputStream In = socket.getInputStream(); //»ñÈ¡·µ»Ø°ü£¬ÒÔ¶ş½øÖÆ¸ñÊ½
+		   InputStream In = socket.getInputStream(); //è·å–è¿”å›åŒ…ï¼Œä»¥äºŒè¿›åˆ¶æ ¼å¼
 		   byte[] bytes = IOUtils.toByteArray(In);
 		   
 		   
 		    String imgName = host+System.currentTimeMillis()+".jpg";
 		    //stdout.println(imgName);
 	    	File imageFile = new File(imgName);
-	        //´´½¨Êä³öÁ÷  
+	        //åˆ›å»ºè¾“å‡ºæµ  
 	        FileOutputStream outStream = new FileOutputStream(imageFile);  
-	        //Ğ´ÈëÊı¾İ  
+	        //å†™å…¥æ•°æ®  
 			outStream.write(bytes);
 			outStream.close();
 		    return imgName;
@@ -133,7 +133,7 @@ public class RequestHelper_stream {
 	   }
 	   try {
 	   /*
-	    * ÀûÓÃ×Ö·ûÁ÷´¦Àí
+	    * åˆ©ç”¨å­—ç¬¦æµå¤„ç†
        Writer out = new OutputStreamWriter(
           socket.getOutputStream(), "ISO-8859-1");
        out.write(raws);
@@ -151,8 +151,8 @@ public class RequestHelper_stream {
 	   out.flush(); 
 	   */
 		
-		   //ÀûÓÃ¶ş½øÖÆÁ÷´¦Àí
-	   OutputStream test = socket.getOutputStream(); //·¢ËÍÊı¾İ°ü£¬ÒÔ¶ş½øÖÆ¸ñÊ½
+		   //åˆ©ç”¨äºŒè¿›åˆ¶æµå¤„ç†
+	   OutputStream test = socket.getOutputStream(); //å‘é€æ•°æ®åŒ…ï¼Œä»¥äºŒè¿›åˆ¶æ ¼å¼
 	   test.write(raws.getBytes());
 	   test.flush();
 	   

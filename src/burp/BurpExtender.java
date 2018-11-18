@@ -104,7 +104,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 				outStream.write(body);
 				outStream.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
             return imgName;
@@ -199,7 +198,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	//IIntruderPayloadGenerator 所需实现的三个函数
 	@Override
 	public boolean hasMorePayloads() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 	
@@ -216,7 +214,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 					stdout.println(imgpath+" ---- "+code);
 					return code.getBytes();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					return e.getMessage().getBytes();
 				}
 
@@ -232,7 +229,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
 		
 	}
 	

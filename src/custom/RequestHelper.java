@@ -79,7 +79,6 @@ public class RequestHelper {
 					"";
 			System.out.println(download(httpservice3,raws3));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -93,7 +92,6 @@ public class RequestHelper {
 		try {
 			bytes = x.dorequest();
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.getMessage();
 		}
 		String path = x.writeImageToDisk(bytes);
