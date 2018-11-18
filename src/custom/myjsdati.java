@@ -21,10 +21,9 @@ public class myjsdati {
 		String imgPath = "D:\\test.jpeg";
 		String code;
 		try {
-			code = PostImage(url,imgPath,"bit4woo","Gto8Button!",1001);
+			code = PostImage(url,imgPath,"bit4woo","xxxxx",1001);
 			System.out.print(code);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -40,7 +39,6 @@ public class myjsdati {
 			String code = PostImage(url,imgPath,username,password,captchaType);
 			return code;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return e.getMessage();
 		}

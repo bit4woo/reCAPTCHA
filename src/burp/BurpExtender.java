@@ -4,29 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import custom.YunSu;
-import custom.imageDownloader;
-
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import custom.GUI;
-import custom.RequestHelper;
-import custom.myYunSu;
-import custom.imageType;
 
 public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMenuFactory, IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator
 {	
@@ -47,7 +32,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
     	stdout = new PrintWriter(callbacks.getStdout(), true);
     	stdout.println(ExtenderName);
     	stdout.println(github);
-        this.callbacks = callbacks;
         helpers = callbacks.getHelpers();
         callbacks.setExtensionName(ExtenderName); //插件名称
         //callbacks.registerHttpListener(this); //如果没有注册，下面的processHttpMessage方法是不会生效的。处理请求和响应包的插件，这个应该是必要的
@@ -201,13 +185,12 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	//IIntruderPayloadGeneratorFactory 所需实现的2个函数
 	@Override
 	public String getGeneratorName() {
-		// TODO Auto-generated method stub
 		return "reCAPTCHA";
 	}
 
 	@Override
 	public IIntruderPayloadGenerator createNewInstance(IIntruderAttack attack) {
-		// TODO Auto-generated method stub
+
 		return this;
 	}
 	
