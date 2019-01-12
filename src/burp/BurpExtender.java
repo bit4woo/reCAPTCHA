@@ -38,7 +38,7 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
         //callbacks.registerHttpListener(this); //如果没有注册，下面的processHttpMessage方法是不会生效的。处理请求和响应包的插件，这个应该是必要的
         callbacks.registerContextMenuFactory(this);
         callbacks.registerIntruderPayloadGeneratorFactory(this);
-        addMenuTab();        
+        callbacks.addSuiteTab(BurpExtender.this);
     }
 
 /////////////////////////////////////////自定义函数/////////////////////////////////////////////////////////////
@@ -117,17 +117,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	
 	
 ///////////////////////////////////以下是各种burp必须的方法 --start//////////////////////////////////////////
-    public void addMenuTab()
-    {
-      SwingUtilities.invokeLater(new Runnable()
-      {
-        public void run()
-        {
-          BurpExtender.this.callbacks.addSuiteTab(BurpExtender.this); //这里的BurpExtender.this实质是指ITab对象，也就是getUiComponent()中的contentPane.这个参数由CGUI()函数初始化。
-          //如果这里报java.lang.NullPointerException: Component cannot be null 错误，需要排查contentPane的初始化是否正确。
-        }
-      });
-    }
 	
 	
     //ITab必须实现的两个方法

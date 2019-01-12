@@ -43,10 +43,14 @@ import burp.IMessageEditor;
 
 
 public class GUI extends JFrame {
-	
-    private String github = "https://github.com/bit4woo/reCAPTCHA";
-    private String helpurl = github;
-    
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String github = "https://github.com/bit4woo/reCAPTCHA";
+	private String helpurl = github;
+
 
 	private JPanel panel_2;
 	private JLabel lblNewLabel_2;
@@ -61,11 +65,11 @@ public class GUI extends JFrame {
 	private JButton btnRequestAPI;
 	private JLabel label_showimg;
 	public JTextField imgHttpService;
-	
+
 	public IHttpRequestResponse MessageInfo =null;// always needed 
 	public IMessageEditor imageMessageEditor;
-	
-	
+
+
 	private JPanel panel_IMessage;
 	private JPanel panel_4;
 	private JTextArea APIResulttextArea;
@@ -91,67 +95,67 @@ public class GUI extends JFrame {
 			}
 		});
 	}
-	
+
 	/**
 	 * Create the frame.
 	 */
 	public GUI() {
-	    
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 930, 497);
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.5);
 		splitPane.setDividerLocation(0.5);
 		contentPane.add(splitPane, BorderLayout.CENTER);
-		
+
 		splitPane_1 = new JSplitPane();
 		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane_1.setResizeWeight(0.6);
 		splitPane.setLeftComponent(splitPane_1);
-		
+
 		panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		splitPane_1.setRightComponent(panel);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		panel_6 = new JPanel();
 		panel.add(panel_6, BorderLayout.NORTH);
-		
+
 		btnRequest = new JButton("Get Image");
 		panel_6.add(btnRequest);
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					
+
 					//******method one: self-applied method RequestHelper*****
 					//String httpservice =MessageInfo.getHttpService().toString();
 					//String httpRaws =new String( MessageInfo.getRequest());
 					//String httpservice = imgHttpService.getText();
 					//String httpRaws = imgRequestRaws.getText();
 					//String imgpath = RequestHelper.download(httpservice, httpRaws);
-					
-					
+
+
 					//******method two: imageDownloader*****
 					//String imgpath = imageDownloader.download(callbacks, helpers, MessageInfo.getHttpService(), MessageInfo.getRequest());
-					
-					
+
+
 					//******method three: getImage in BurpExtender*****
 					MyThread1 t1 = new MyThread1(MessageInfo);
-					ExecutorService executor = Executors.newCachedThreadPool();
-					Future<String> futureCall  =executor.submit(t1);
+					ExecutorService executor = Executors.newSingleThreadExecutor ();
+					Future<String> futureCall = executor.submit(t1);
 					String imgpath = futureCall.get();
-					
+					executor.shutdownNow();
+
 					//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
 					//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
-					
-					
+
 					imgPath.setText(imgpath);
-					
+
 					//label_showimg.setIcon(new ImageIcon(imgpath));
 					Image image = ImageIO.read(new File(imgpath));
 					ImageIcon icon = new ImageIcon(image);
@@ -162,61 +166,61 @@ public class GUI extends JFrame {
 				//label_showimg.setIcon(new ImageIcon("D:\\eclipse-workspace\\reCAPTCHA\\www.cnhww.com1509530485395.bmp"));
 			}
 		});
-		
+
 		panel_7 = new JPanel();
 		panel.add(panel_7, BorderLayout.CENTER);
-		
+
 		label_showimg = new JLabel("");
 		panel_7.add(label_showimg);
 		label_showimg.setHorizontalAlignment(SwingConstants.RIGHT);
-		
+
 		imgPath = new JTextField();
 		panel_7.add(imgPath);
 		imgPath.setColumns(30);
-		
-		
+
+
 		panel_IMessage = new JPanel();
 		panel_IMessage.setBorder(new LineBorder(new Color(0, 0, 0)));
 		splitPane_1.setLeftComponent(panel_IMessage);
 		panel_IMessage.setLayout(new BorderLayout(0, 0));
-		
+
 		imgHttpService = new JTextField();
 		panel_IMessage.add(imgHttpService, BorderLayout.NORTH);
 		imgHttpService.setHorizontalAlignment(SwingConstants.LEFT);
 		imgHttpService.setColumns(30);
-		
+
 		imgRequestRaws = new JTextArea();
 		panel_IMessage.add(imgRequestRaws, BorderLayout.CENTER);
 		imgRequestRaws.setLineWrap(true);
-		
-		
+
+
 		splitPane_2 = new JSplitPane();
 		splitPane_2.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane_2.setResizeWeight(0.6);
 		splitPane.setRightComponent(splitPane_2);
-		
+
 		panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		splitPane_2.setRightComponent(panel_1);
 		panel_1.setLayout(new BorderLayout(0, 0));
-		
+
 		APIResulttextArea = new JTextArea();
 		APIResulttextArea.setWrapStyleWord(true);
 		APIResulttextArea.setFont(new Font("ו", Font.BOLD, 12));//use this to display Chinese correctly.!!!
 		panel_1.add(APIResulttextArea);
-		
+
 		panel_5 = new JPanel();
 		panel_1.add(panel_5, BorderLayout.NORTH);
-		
+
 		btnRequestAPI = new JButton("Get Answer");
 		btnRequestAPI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String imgpath = imgPath.getText();
 				String result = getAnswer(imgpath);
 				APIResulttextArea.setText(result);
-				}
+			}
 		});
-		
+
 		lblAboutTypeid = new JLabel("Help?");
 		lblAboutTypeid.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAboutTypeid.setFont(new Font("ו", Font.BOLD, 12));
@@ -232,7 +236,7 @@ public class GUI extends JFrame {
 				} catch (Exception e2) {
 					//callbacks.printError(e2.getMessage());
 				}
-				
+
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -246,16 +250,16 @@ public class GUI extends JFrame {
 		panel_5.add(lblAboutTypeid);
 		panel_5.add(btnRequestAPI);
 		btnRequestAPI.setHorizontalAlignment(SwingConstants.LEFT);
-		
+
 		panel_4 = new JPanel();
 		panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
 		splitPane_2.setLeftComponent(panel_4);
 		panel_4.setLayout(new BorderLayout(0, 0));
-		
+
 		APIRequestRaws = new JTextArea();
 		panel_4.add(APIRequestRaws);
 		APIRequestRaws.setLineWrap(true);
-		
+
 		APIcomboBox = new JComboBox<String>();
 		APIcomboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
@@ -280,15 +284,15 @@ public class GUI extends JFrame {
 		APIcomboBox.addItem("GSA Captcha Breaker");
 		APIcomboBox.addItem("http://www.ysdm.net");
 		APIcomboBox.addItem("https://www.jsdati.com");
-		
 
-		
+
+
 		panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
 		FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		contentPane.add(panel_2, BorderLayout.SOUTH);
-		
+
 		lblNewLabel_2 = new JLabel("    "+github);
 		lblNewLabel_2.setFont(new Font("ו", Font.BOLD, 12));
 		lblNewLabel_2.addMouseListener(new MouseAdapter() {
@@ -303,7 +307,7 @@ public class GUI extends JFrame {
 				} catch (Exception e2) {
 					//callbacks.printError(e2.getMessage());
 				}
-				
+
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -317,7 +321,7 @@ public class GUI extends JFrame {
 		panel_2.add(lblNewLabel_2);
 	}
 
-	
+
 	public String getAnswer(String imgpath) {
 		Object Method = this.APIcomboBox.getSelectedItem();
 		String result = "";
@@ -325,7 +329,7 @@ public class GUI extends JFrame {
 			if (Method.equals("http://www.ysdm.net")) {
 				String para = APIRequestRaws.getText();
 				result = myYunSu.getCode(imgpath, para);
-				
+
 			}else if (Method.equals("GSA Captcha Breaker"))
 			{	
 				String httpService = APIRequestRaws.getText();
@@ -349,10 +353,10 @@ class MyThread implements Runnable{
 	MyThread(IHttpRequestResponse MessageInfo,JTextField imgPath){
 		this.MessageInfo = MessageInfo;
 	}
-    @Override
-    public synchronized  void  run() {
-    	BurpExtender.getImage(MessageInfo);
-    }
+	@Override
+	public synchronized  void  run() {
+		BurpExtender.getImage(MessageInfo);
+	}
 }
 
 class MyThread1 implements Callable<String> {
@@ -361,9 +365,9 @@ class MyThread1 implements Callable<String> {
 	MyThread1(IHttpRequestResponse MessageInfo){
 		this.MessageInfo = MessageInfo;
 	}
-    @Override
-    public String call() throws Exception {
-        // Here your implementation
-        return BurpExtender.getImage(MessageInfo);
-    }
+	@Override
+	public String call() throws Exception {
+		// Here your implementation
+		return BurpExtender.getImage(MessageInfo);
+	}
 }
