@@ -2,43 +2,36 @@ package custom;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JTextArea;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.FlowLayout;
-import javax.swing.JSplitPane;
-import java.awt.Desktop;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URI;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import burp.BurpExtender;
-import burp.IHttpRequestResponse;
+import burp.GetImageThread;
 import burp.IMessageEditor;
 
 
@@ -66,7 +59,6 @@ public class GUI extends JFrame {
 	private JLabel label_showimg;
 	public JTextField imgHttpService;
 
-	public IHttpRequestResponse MessageInfo =null;// always needed 
 	public IMessageEditor imageMessageEditor;
 
 
@@ -145,22 +137,34 @@ public class GUI extends JFrame {
 
 
 					//******method three: getImage in BurpExtender*****
-					MyThread1 t1 = new MyThread1(MessageInfo);
-					ExecutorService executor = Executors.newSingleThreadExecutor ();
-					Future<String> futureCall = executor.submit(t1);
-					String imgpath = futureCall.get();
-					executor.shutdownNow();
+					
+					GetImageThread thread = new GetImageThread(BurpExtender.getImgMessageInfo());
+					thread.start();
+					
+					while(true) {//to wait all threads exit.
+						if (thread.isAlive()) {
+							try {
+								Thread.sleep(1*1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							continue;
+						}else {
+							break;
+						}
+					}
 
 					//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
 					//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
 
-					imgPath.setText(imgpath);
+					imgPath.setText(BurpExtender.getCurrentImgName());
 
 					//label_showimg.setIcon(new ImageIcon(imgpath));
-					Image image = ImageIO.read(new File(imgpath));
+					Image image = ImageIO.read(new File(BurpExtender.getCurrentImgName()));
 					ImageIcon icon = new ImageIcon(image);
 					label_showimg.setIcon(icon);
 				} catch (Exception e) {
+					e.printStackTrace(BurpExtender.stderr);
 					imgPath.setText(e.getMessage());
 				}
 				//label_showimg.setIcon(new ImageIcon("D:\\eclipse-workspace\\reCAPTCHA\\www.cnhww.com1509530485395.bmp"));
@@ -343,31 +347,5 @@ public class GUI extends JFrame {
 			result = "image path is null!";
 		}
 		return result;
-	}
-}
-
-
-class MyThread implements Runnable{
-	//this can let me call getImage(make http request in GUI),but can't return value
-	private IHttpRequestResponse MessageInfo =null;
-	MyThread(IHttpRequestResponse MessageInfo,JTextField imgPath){
-		this.MessageInfo = MessageInfo;
-	}
-	@Override
-	public synchronized  void  run() {
-		BurpExtender.getImage(MessageInfo);
-	}
-}
-
-class MyThread1 implements Callable<String> {
-	//can return vaule!!
-	private IHttpRequestResponse MessageInfo =null;
-	MyThread1(IHttpRequestResponse MessageInfo){
-		this.MessageInfo = MessageInfo;
-	}
-	@Override
-	public String call() throws Exception {
-		// Here your implementation
-		return BurpExtender.getImage(MessageInfo);
 	}
 }
