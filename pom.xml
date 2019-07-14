@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bit4woo.burp</groupId>
 	<artifactId>reCAPTCHA</artifactId>
-	<version>0.8</version>
+	<version>0.9</version>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>

@@ -19,12 +19,11 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	private static IBurpExtenderCallbacks callbacks;
 	private static IExtensionHelpers helpers;
 
-	private String ExtenderName = "reCAPTCHA v0.8 by bit4";
+	private String ExtenderName = "reCAPTCHA v0.9 by bit4";
 	private String github = "https://github.com/bit4woo/reCAPTCHA";
 	public static PrintWriter stdout;
 	public static PrintWriter stderr;
 
-	private static String currentImgName = null;
 	private static IHttpRequestResponse imgMessageInfo;
 	IMessageEditor imageMessageEditor;
 
@@ -47,14 +46,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	/////////////////////////////////////////自定义函数/////////////////////////////////////////////////////////////
 	public static IBurpExtenderCallbacks getBurpCallbacks() {
 		return callbacks;
-	}
-
-	public static String getCurrentImgName() {
-		return currentImgName;
-	}
-
-	public static void setCurrentImgName(String currentImgName) {
-		BurpExtender.currentImgName = currentImgName;
 	}
 
 	public static IHttpRequestResponse getImgMessageInfo() {
@@ -115,10 +106,10 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 				fileType ="jpg";
 			}
 
-			currentImgName = System.currentTimeMillis()+service.getHost()+"."+fileType;
+			String ImgName = System.currentTimeMillis()+service.getHost()+"."+fileType;
 			//stdout.println(imgName);
 			try {
-				File imageFile = new File(currentImgName);
+				File imageFile = new File(ImgName);
 				//创建输出流  
 				FileOutputStream outStream = new FileOutputStream(imageFile);  
 				//写入数据  
@@ -126,8 +117,8 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 				outStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-			} 
-			return currentImgName;
+			}
+			return ImgName;
 		}else {
 			return null;
 		}

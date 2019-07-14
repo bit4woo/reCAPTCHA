@@ -73,6 +73,14 @@ payload 2 的配置和情况一中的配置完全一样。
 
 2018-08-07：支持https://www.jsdati.com
 
+2019-07-14：优化错误输错，便于issue排查
+
+### FAQ
+
+1、Response cannot be null
+
+插件使用了burp的请求函数，如果提示“Response cannot be null”表面burp无法访问该请求。请检查你的网络情况和其他超时等设置，该问题无法彻底解决。
+
 **作者**
 
 [bit4](http://www.code2sec.com/)@[勾陈安全](http://www.polaris-lab.com/)

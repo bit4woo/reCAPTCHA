@@ -31,7 +31,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import burp.BurpExtender;
-import burp.GetImageThread;
+import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
 
 
@@ -122,52 +122,11 @@ public class GUI extends JFrame {
 		panel_6.add(btnRequest);
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-
-					//******method one: self-applied method RequestHelper*****
-					//String httpservice =MessageInfo.getHttpService().toString();
-					//String httpRaws =new String( MessageInfo.getRequest());
-					//String httpservice = imgHttpService.getText();
-					//String httpRaws = imgRequestRaws.getText();
-					//String imgpath = RequestHelper.download(httpservice, httpRaws);
-
-
-					//******method two: imageDownloader*****
-					//String imgpath = imageDownloader.download(callbacks, helpers, MessageInfo.getHttpService(), MessageInfo.getRequest());
-
-
-					//******method three: getImage in BurpExtender*****
-					
-					GetImageThread thread = new GetImageThread(BurpExtender.getImgMessageInfo());
-					thread.start();
-					
-					while(true) {//to wait all threads exit.
-						if (thread.isAlive()) {
-							try {
-								Thread.sleep(1*1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							continue;
-						}else {
-							break;
-						}
-					}
-
-					//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
-					//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
-
-					imgPath.setText(BurpExtender.getCurrentImgName());
-
-					//label_showimg.setIcon(new ImageIcon(imgpath));
-					Image image = ImageIO.read(new File(BurpExtender.getCurrentImgName()));
-					ImageIcon icon = new ImageIcon(image);
-					label_showimg.setIcon(icon);
-				} catch (Exception e) {
-					e.printStackTrace(BurpExtender.stderr);
-					imgPath.setText(e.getMessage());
-				}
-				//label_showimg.setIcon(new ImageIcon("D:\\eclipse-workspace\\reCAPTCHA\\www.cnhww.com1509530485395.bmp"));
+				GetImageThread thread = new GetImageThread(BurpExtender.getImgMessageInfo());
+				thread.start();
+				btnRequest.setEnabled(false);
+				//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
+				//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
 			}
 		});
 
@@ -219,9 +178,19 @@ public class GUI extends JFrame {
 		btnRequestAPI = new JButton("Get Answer");
 		btnRequestAPI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String imgpath = imgPath.getText();
-				String result = getAnswer(imgpath);
-				APIResulttextArea.setText(result);
+//				//GUI依然会被卡住
+//				SwingUtilities.invokeLater(new Runnable()
+//				{
+//					public void run()
+//					{
+//						String imgpath = imgPath.getText();
+//						String result = getAnswer(imgpath);
+//						APIResulttextArea.setText(result);
+//					}
+//				});
+				btnRequestAPI.setEnabled(false);
+				GetAnswerThread thread = new GetAnswerThread(imgPath.getText());
+				thread.start();
 			}
 		});
 
@@ -347,5 +316,46 @@ public class GUI extends JFrame {
 			result = "image path is null!";
 		}
 		return result;
+	}
+	
+	public class GetAnswerThread extends Thread {
+		private String imgpath;
+
+		public GetAnswerThread(String imgpath) {
+			this.imgpath = imgpath;
+		}
+		public void run() {
+			String imgpath = imgPath.getText();
+			String result = getAnswer(imgpath);
+			APIResulttextArea.setText(result);
+			btnRequestAPI.setEnabled(true);
+		}
+	}
+	
+	public class GetImageThread extends Thread {
+		private IHttpRequestResponse MessageInfo;
+
+		public GetImageThread(IHttpRequestResponse MessageInfo) {
+			this.MessageInfo = MessageInfo;
+		}
+		public void run() {
+			try {
+				//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
+				//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
+				
+				String imageName = BurpExtender.getImage(MessageInfo);
+				imgPath.setText(imageName);
+
+				//label_showimg.setIcon(new ImageIcon(imgpath));
+				Image image = ImageIO.read(new File(imageName));
+				ImageIcon icon = new ImageIcon(image);
+				label_showimg.setIcon(icon);
+			} catch (Exception e) {
+				e.printStackTrace(BurpExtender.stderr);
+				imgPath.setText(e.getMessage());
+			} finally {
+				btnRequest.setEnabled(false);
+			}
+		}
 	}
 }
