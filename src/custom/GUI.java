@@ -33,6 +33,9 @@ import javax.swing.border.LineBorder;
 import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
+import recon.myGSA;
+import recon.myYunSu;
+import recon.myjsdati;
 
 
 public class GUI extends JFrame {

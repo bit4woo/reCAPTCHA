@@ -1,4 +1,4 @@
-package custom;
+package recon;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -26,11 +26,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class myGSA {
+public class myGSA implements IReconginze  {
 	public static void main(String[] args) {
 		String httpService = "127.0.0.1";
 		String imgPath = "C:\\Users\\PC\\Desktop\\Captcha.jpg";
 		System.out.print(getCode(imgPath,httpService));
+	}
+	
+	@Override
+	public String getImageText(String imagePath) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
     public static String getCode(String imagePath,String httpService) {
@@ -127,4 +133,6 @@ public class myGSA {
 	         return Html;
 	      }
 	 }
+
+
 }

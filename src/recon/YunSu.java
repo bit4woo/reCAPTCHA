@@ -1,4 +1,4 @@
-package custom;
+package recon;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -15,6 +15,8 @@ import java.security.MessageDigest;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+
+import org.junit.jupiter.api.Test;
 
 public class YunSu {
 	
@@ -44,6 +46,11 @@ public class YunSu {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	@Test
+	public static void test() {
+		System.out.println("");
 	}
 	
 	/**
