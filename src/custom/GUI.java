@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -33,16 +34,13 @@ import javax.swing.border.LineBorder;
 import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
+import deprecated.myYunSu;
 import recon.myGSA;
-import recon.myYunSu;
 import recon.myjsdati;
 
 
 public class GUI extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String github = "https://github.com/bit4woo/reCAPTCHA";
 	private String helpurl = github;
@@ -63,7 +61,8 @@ public class GUI extends JFrame {
 	public JTextField imgHttpService;
 
 	public IMessageEditor imageMessageEditor;
-
+	public static JRadioButton rdbtnUseSelfApi;
+	public static JTextField proxyUrl = new JTextField();
 
 	private JPanel panel_IMessage;
 	private JPanel panel_4;
@@ -74,6 +73,7 @@ public class GUI extends JFrame {
 	private JTextField imgPath;
 	private JLabel lblAboutTypeid;
 	private JComboBox<String> APIcomboBox;
+
 
 	/**
 	 * Launch the application.
@@ -121,13 +121,32 @@ public class GUI extends JFrame {
 		panel_6 = new JPanel();
 		panel.add(panel_6, BorderLayout.NORTH);
 
+		rdbtnUseSelfApi = new JRadioButton("Use Self Api with proxy");
+		rdbtnUseSelfApi.setSelected(false);
+		panel_6.add(rdbtnUseSelfApi);
+
+		panel_6.add(proxyUrl);
+		proxyUrl.setText("http://127.0.0.1:8080");
+		proxyUrl.setEnabled(false);
+
+		rdbtnUseSelfApi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (rdbtnUseSelfApi.isSelected()) {
+					proxyUrl.setEnabled(true);
+				}else {
+					proxyUrl.setEnabled(false);
+				}
+			}
+		});
+
+
 		btnRequest = new JButton("Get Image");
 		panel_6.add(btnRequest);
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				GetImageThread thread = new GetImageThread(BurpExtender.getImgMessageInfo());
 				thread.start();
-				btnRequest.setEnabled(false);
+				//btnRequest.setEnabled(true);
 				//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
 				//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
 			}
@@ -181,16 +200,16 @@ public class GUI extends JFrame {
 		btnRequestAPI = new JButton("Get Answer");
 		btnRequestAPI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				//GUI依然会被卡住
-//				SwingUtilities.invokeLater(new Runnable()
-//				{
-//					public void run()
-//					{
-//						String imgpath = imgPath.getText();
-//						String result = getAnswer(imgpath);
-//						APIResulttextArea.setText(result);
-//					}
-//				});
+				//				//GUI依然会被卡住
+				//				SwingUtilities.invokeLater(new Runnable()
+				//				{
+				//					public void run()
+				//					{
+				//						String imgpath = imgPath.getText();
+				//						String result = getAnswer(imgpath);
+				//						APIResulttextArea.setText(result);
+				//					}
+				//				});
 				btnRequestAPI.setEnabled(false);
 				GetAnswerThread thread = new GetAnswerThread(imgPath.getText());
 				thread.start();
@@ -302,11 +321,7 @@ public class GUI extends JFrame {
 		Object Method = this.APIcomboBox.getSelectedItem();
 		String result = "";
 		if(!imgpath.equals("")) {
-			if (Method.equals("http://www.ysdm.net")) {
-				String para = APIRequestRaws.getText();
-				result = myYunSu.getCode(imgpath, para);
-
-			}else if (Method.equals("GSA Captcha Breaker"))
+			if (Method.equals("GSA Captcha Breaker"))
 			{	
 				String httpService = APIRequestRaws.getText();
 				result = myGSA.getCode(imgpath, httpService);
@@ -320,7 +335,7 @@ public class GUI extends JFrame {
 		}
 		return result;
 	}
-	
+
 	public class GetAnswerThread extends Thread {
 		private String imgpath;
 
@@ -334,7 +349,7 @@ public class GUI extends JFrame {
 			btnRequestAPI.setEnabled(true);
 		}
 	}
-	
+
 	public class GetImageThread extends Thread {
 		private IHttpRequestResponse MessageInfo;
 
@@ -345,7 +360,7 @@ public class GUI extends JFrame {
 			try {
 				//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
 				//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
-				
+				btnRequest.setEnabled(false);
 				String imageName = BurpExtender.getImage(MessageInfo);
 				imgPath.setText(imageName);
 
@@ -357,7 +372,7 @@ public class GUI extends JFrame {
 				e.printStackTrace(BurpExtender.stderr);
 				imgPath.setText(e.getMessage());
 			} finally {
-				btnRequest.setEnabled(false);
+				btnRequest.setEnabled(true);
 			}
 		}
 	}

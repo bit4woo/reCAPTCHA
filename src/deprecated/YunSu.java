@@ -1,4 +1,4 @@
-package recon;
+package deprecated;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -16,8 +16,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 
-import org.junit.jupiter.api.Test;
-
+@Deprecated
 public class YunSu {
 	
 	/**
@@ -48,7 +47,6 @@ public class YunSu {
 		}
 	}
 	
-	@Test
 	public static void test() {
 		System.out.println("");
 	}
