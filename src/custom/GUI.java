@@ -271,7 +271,7 @@ public class GUI extends JFrame {
 				}
 				if (APIcomboBox.getSelectedItem().equals("https://www.jsdati.com"))
 				{
-					APIRequestRaws.setText("username=%s&password=%s&captchaType=%s");
+					APIRequestRaws.setText("username=bit4woo&password=password&captchaType=1001");
 					helpurl = "https://www.jsdati.com/docs/price";
 				}
 			}

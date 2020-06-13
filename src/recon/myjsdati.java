@@ -41,6 +41,7 @@ public class myjsdati {
 	
 	public static String genBody(String imgPath,String paraString) {
 		
+		//username=bit4woo&password=password&captchaType=1001
 		HashMap<String, String> paras = getConfig(paraString);
 		String username = paras.get("username");
 		String password = paras.get("password");
