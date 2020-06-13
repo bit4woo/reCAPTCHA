@@ -85,9 +85,15 @@ payload 2 的配置和情况一中的配置完全一样。
 
 请尝试开启“Use Self Api with proxy”选项，并将proxy设置为burp代理，然后再试，可以到burp的history中查看请求，以便排查问题。
 
-**作者**
+### 作者
 
 [bit4woo](https://github.com/bit4woo)@[勾陈安全](http://www.polaris-lab.com/)
+
+### 同类项目
+
+https://github.com/c0ny1/captcha-killer
+
+https://github.com/Releasel0ck/reCAPTCHA
 
 Burp插件微信交流群：![wechat_group](doc/wechat_group.jpg)
 
