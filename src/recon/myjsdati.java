@@ -1,91 +1,63 @@
 package recon;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
+import httpbase.DoRequest;
+import httpbase.Response;
+
 public class myjsdati {
+	
+	//https://l-files.cn-gd.ufileos.com/api/%E8%81%94%E4%BC%97%E8%AF%86%E5%88%ABV2-API%E6%8E%A5%E5%8F%A3%E5%8D%8F%E8%AE%AE.pdf
+	//https://www.jsdati.com/docs/api
+	public static String header ="POST /upload HTTP/1.1\r\n" + 
+			"Host: v2-api.jsdama.com\r\n" + 
+			"Connection: keep-alive\r\n" +
+			"Accept: application/json, text/javascript, */*; q=0.01\r\n" + 
+			"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n" + 
+			"Content-Type: text/json";
+	
 	public static void main(String[] args) {
-		String url = "https://v2-api.jsdama.com/upload";
-		String imgPath = "D:\\test.jpeg";
+		String imgPath = "D:/github/reCAPTCHA/src/deprecated/testImage.jpeg";
 		String code;
 		try {
-			code = PostImage(url,imgPath,"bit4woo","xxxxx",1001);
+			code = getCode(imgPath,"username=bit4woo&password=password&captchaType=4","http://127.0.0.1:8080");
 			System.out.print(code);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static String getCode(String imgPath,String paraString) {
-		String url = "https://v2-api.jsdama.com/upload";
+	public static String getCode(String imgPath,String paraString,String proxyUrl) throws Exception {
+		String request = header+"\r\n\r\n"+genBody(imgPath,paraString);
+		Response resp = DoRequest.makeRequest("https://v2-api.jsdama.com/upload", request.getBytes(), proxyUrl);
+		String code = grepResult(new String(resp.getBody()));
+		return code;
+	}
+	
+	public static String genBody(String imgPath,String paraString) {
+		
 		HashMap<String, String> paras = getConfig(paraString);
 		String username = paras.get("username");
 		String password = paras.get("password");
 		int captchaType = Integer.parseInt(paras.get("captchaType"));
-		try {
-			String code = PostImage(url,imgPath,username,password,captchaType);
-			return code;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return e.getMessage();
-		}
-	}
-
-
-	public static String PostImage(String url,String imgPath,String username,String password,int typeid) throws IOException {
-		long time = (new Date()).getTime();
-
-		URL u = new URL(url);
-		//Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8080));
-		//HttpURLConnection con = (HttpURLConnection) u.openConnection(proxy);
-		HttpURLConnection con = (HttpURLConnection) u.openConnection();
-		con.setRequestMethod("POST");
-		con.setReadTimeout(10*1000);
-		con.setConnectTimeout(10*1000); //5min
-		con.setDoOutput(true);
-		con.setDoInput(true);
-		con.setUseCaches(true);
-		con.setRequestProperty("Content-Type","text/json");
-		con.setRequestProperty("Connection", "keep-alive");
-		OutputStream out = con.getOutputStream();
-
+		
+		//{"softwareId":100008,"softwareSecret":"HQVvQhd81CHcnhVp7aQ6Lc777vBNC6D16ASdcXCz","username":"admin","password":"123456","captchaData":"base64结果","captchaType":1,"captchaMinLength":0,"captchaMaxLength":0}
 		JSONObject jsonParam = new JSONObject();
 		jsonParam.put("softwareId", 10706);
 		jsonParam.put("softwareSecret", "umdNcjK6PWp17uT6BWUY96PmFVtSPS5Pd4Nhir45");
 		jsonParam.put("username", username);
 		jsonParam.put("password", password);
 		jsonParam.put("captchaData", readImage(imgPath));
-		jsonParam.put("captchaType", typeid);
-
-
-		out.write("\r\n\r\n".getBytes());
-		out.write(jsonParam.toString().getBytes());
-		out.flush();
-		out.close();
-
-		StringBuffer buffer = new StringBuffer();
-		BufferedReader br = new BufferedReader(new InputStreamReader(con
-				.getInputStream(), "UTF-8"));
-		String temp;
-		while ((temp = br.readLine()) != null) {
-			buffer.append(temp);
-			buffer.append("\n");
-		}
-		String jsonResponse = buffer.toString();
-		return grepResult(jsonResponse);
+		jsonParam.put("captchaType", captchaType);
+		
+		return jsonParam.toString();
 	}
-
+	
 	public static String grepResult(String jsonstr)
 	{	 JSONObject obj = new JSONObject(jsonstr);
 	int code = obj.getInt("code");

@@ -34,7 +34,6 @@ import javax.swing.border.LineBorder;
 import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
-import deprecated.myYunSu;
 import recon.myGSA;
 import recon.myjsdati;
 
@@ -62,6 +61,7 @@ public class GUI extends JFrame {
 
 	public IMessageEditor imageMessageEditor;
 	public static JRadioButton rdbtnUseSelfApi;
+	public static JRadioButton rdbtnUseProxy;
 	public static JTextField proxyUrl = new JTextField();
 
 	private JPanel panel_IMessage;
@@ -73,6 +73,7 @@ public class GUI extends JFrame {
 	private JTextField imgPath;
 	private JLabel lblAboutTypeid;
 	private JComboBox<String> APIcomboBox;
+
 
 
 	/**
@@ -197,6 +198,10 @@ public class GUI extends JFrame {
 		panel_5 = new JPanel();
 		panel_1.add(panel_5, BorderLayout.NORTH);
 
+		rdbtnUseProxy = new JRadioButton("Use Proxy");
+		rdbtnUseProxy.setSelected(false);
+		panel_5.add(rdbtnUseProxy);
+
 		btnRequestAPI = new JButton("Get Answer");
 		btnRequestAPI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -215,6 +220,8 @@ public class GUI extends JFrame {
 				thread.start();
 			}
 		});
+		panel_5.add(btnRequestAPI);
+		btnRequestAPI.setHorizontalAlignment(SwingConstants.LEFT);
 
 		lblAboutTypeid = new JLabel("Help?");
 		lblAboutTypeid.setHorizontalAlignment(SwingConstants.LEFT);
@@ -243,8 +250,7 @@ public class GUI extends JFrame {
 			}
 		});
 		panel_5.add(lblAboutTypeid);
-		panel_5.add(btnRequestAPI);
-		btnRequestAPI.setHorizontalAlignment(SwingConstants.LEFT);
+
 
 		panel_4 = new JPanel();
 		panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -258,17 +264,12 @@ public class GUI extends JFrame {
 		APIcomboBox = new JComboBox<String>();
 		APIcomboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				if (APIcomboBox.getSelectedItem().equals("http://www.ysdm.net"))
-				{
-					APIRequestRaws.setText("username=%s&password=%s&typeid=%s");
-					helpurl="http://www.ysdm.net/home/PriceType";
-				}
-				else if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
+				if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
 				{
 					APIRequestRaws.setText("http://127.0.0.1");
 					helpurl="https://www.gsa-online.de/gsa-docu/";
 				}
-				else if (APIcomboBox.getSelectedItem().equals("https://www.jsdati.com"))
+				if (APIcomboBox.getSelectedItem().equals("https://www.jsdati.com"))
 				{
 					APIRequestRaws.setText("username=%s&password=%s&captchaType=%s");
 					helpurl = "https://www.jsdati.com/docs/price";
@@ -276,11 +277,8 @@ public class GUI extends JFrame {
 			}
 		});
 		panel_4.add(APIcomboBox, BorderLayout.NORTH);
-		APIcomboBox.addItem("GSA Captcha Breaker");
-		APIcomboBox.addItem("http://www.ysdm.net");
 		APIcomboBox.addItem("https://www.jsdati.com");
-
-
+		APIcomboBox.addItem("GSA Captcha Breaker");
 
 		panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -320,15 +318,23 @@ public class GUI extends JFrame {
 	public String getAnswer(String imgpath) {
 		Object Method = this.APIcomboBox.getSelectedItem();
 		String result = "";
+		String proxyUrl = "";
+		if (GUI.rdbtnUseProxy.isSelected()) {
+			proxyUrl = GUI.proxyUrl.getText().trim();
+		}
 		if(!imgpath.equals("")) {
 			if (Method.equals("GSA Captcha Breaker"))
 			{	
 				String httpService = APIRequestRaws.getText();
-				result = myGSA.getCode(imgpath, httpService);
+				result = myGSA.getCode(imgpath, httpService,proxyUrl);
 			}else if (Method.equals("https://www.jsdati.com")) 
 			{
 				String para = APIRequestRaws.getText();
-				result = myjsdati.getCode(imgpath, para);
+				try {
+					result = myjsdati.getCode(imgpath, para,proxyUrl);
+				} catch (Exception e) {
+					e.printStackTrace(BurpExtender.stderr);
+				}
 			}
 		} else {
 			result = "image path is null!";
