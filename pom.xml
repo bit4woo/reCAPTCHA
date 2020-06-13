@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bit4woo.burp</groupId>
 	<artifactId>reCAPTCHA</artifactId>
-	<version>0.9</version>
+	<version>1.0</version>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -46,11 +46,11 @@
 			<version>1.7.22</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.49</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20200518</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
@@ -59,6 +59,10 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.11</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
+			<version>4.13</version> <scope>test</scope> </dependency> -->
 
 	</dependencies>
 </project>

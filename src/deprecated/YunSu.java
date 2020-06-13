@@ -1,4 +1,4 @@
-package custom;
+package deprecated;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -16,6 +16,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 
+@Deprecated
 public class YunSu {
 	
 	/**
@@ -44,6 +45,10 @@ public class YunSu {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static void test() {
+		System.out.println("");
 	}
 	
 	/**

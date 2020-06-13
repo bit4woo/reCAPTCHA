@@ -1,4 +1,4 @@
-package custom;
+package deprecated;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+@Deprecated
 public class myYunSu {
 	public static void main(String[] args) {
 		String parastring = "username=xxxx&password=xxxx&typeid=3040&timeout=60&softid=66239&softkey=a44fbc0b1900420681e436fc424cbd86";

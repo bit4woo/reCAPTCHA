@@ -75,15 +75,25 @@ payload 2 的配置和情况一中的配置完全一样。
 
 2019-07-14：优化错误输错，便于issue排查
 
+2020-06-13：实现自己的HTTP请求方法，支持代理，以便调试发现问题；重写myjsdati.java
+
 ### FAQ
 
-1、Response cannot be null
+1、关于"Response cannot be null"错误
 
-插件使用了burp的请求函数，如果提示“Response cannot be null”表面burp无法访问该请求。请检查你的网络情况和其他超时等设置，该问题无法彻底解决。
+~~插件使用了burp的请求函数，如果提示“Response cannot be null”表明burp无法访问该请求。请检查你的网络情况和其他超时等设置，该问题无法彻底解决。~~
 
-**作者**
+请尝试开启“Use Self Api with proxy”选项，并将proxy设置为burp代理，然后再试，可以到burp的history中查看请求，以便排查问题。
 
-[bit4](http://www.code2sec.com/)@[勾陈安全](http://www.polaris-lab.com/)
+### 作者
+
+[bit4woo](https://github.com/bit4woo)@[勾陈安全](http://www.polaris-lab.com/)
+
+### 同类项目
+
+https://github.com/c0ny1/captcha-killer
+
+https://github.com/Releasel0ck/reCAPTCHA
 
 Burp插件微信交流群：![wechat_group](doc/wechat_group.jpg)
 
