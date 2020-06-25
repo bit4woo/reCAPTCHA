@@ -25,6 +25,13 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>
+								true<!--to get Version from pom.xml -->
+							</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
 				</configuration>
 				<executions>
 					<execution>
@@ -60,9 +67,12 @@
 			<version>1.11</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
-			<version>4.13</version> <scope>test</scope> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
+		<dependency>
+			<groupId>org.beanshell</groupId>
+			<artifactId>bsh</artifactId>
+			<version>2.0b5</version>
+		</dependency>
 
 	</dependencies>
 </project>

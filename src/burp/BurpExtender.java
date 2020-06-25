@@ -17,8 +17,6 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	private static IBurpExtenderCallbacks callbacks;
 	private static IExtensionHelpers helpers;
 
-	private String ExtenderName = "reCAPTCHA v1.0 by bit4";
-	private String github = "https://github.com/bit4woo/reCAPTCHA";
 	public static PrintWriter stdout;
 	public static PrintWriter stderr;
 
@@ -31,9 +29,9 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 		BurpExtender.callbacks = callbacks;
 		helpers = callbacks.getHelpers();
 		flushStd();
-		stdout.println(ExtenderName);
-		stdout.println(github);
-		callbacks.setExtensionName(ExtenderName); //插件名称
+		stdout.println(Info.getFullExtensionName());
+		stdout.println(Info.github);
+		callbacks.setExtensionName(Info.getFullExtensionName()); //插件名称
 		//callbacks.registerHttpListener(this); //如果没有注册，下面的processHttpMessage方法是不会生效的。处理请求和响应包的插件，这个应该是必要的
 		callbacks.registerContextMenuFactory(this);
 		callbacks.registerIntruderPayloadGeneratorFactory(this);
