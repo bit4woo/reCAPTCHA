@@ -17,6 +17,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 
+import burp.BurpExtender;
+
 public class DoRequest {
 
 	public static void main(String[] args) {
@@ -114,7 +116,9 @@ public class DoRequest {
 		conn.setConnectTimeout(5 * 1000);
 		conn.setReadTimeout(10*1000);
 
-		if (req.getBody() != null) {
+		//当有body的时候，HttpURLConnection会自动将请求方法改为POST！这很不好，是存在Get带body的情况的。
+		BurpExtender.stderr.println("aaa"+new String(req.getBody())+"bbb");
+		if (req.getBody() != null && !new String(req.getBody()).equals("")) {
 			conn.setDoOutput(true);
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream()); 
 			out.write(req.getBody());
@@ -173,8 +177,9 @@ public class DoRequest {
 		conn.setRequestMethod(req.getMethod());
 		conn.setConnectTimeout(5 * 1000);
 		conn.setReadTimeout(10*1000);
-
-		if (req.getBody() != null) {
+		
+		BurpExtender.stderr.println("aaa"+new String(req.getBody())+"bbb");
+		if (req.getBody() != null && !new String(req.getBody()).equals("")) {
 			conn.setDoOutput(true);
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream()); 
 			out.write(req.getBody());
