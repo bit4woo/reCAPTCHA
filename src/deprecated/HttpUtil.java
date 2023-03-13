@@ -1,4 +1,4 @@
-package httpbase;
+package deprecated;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,6 +12,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+
+import httpbase.MyX509TrustManager;
 
 @Deprecated
 public class HttpUtil {

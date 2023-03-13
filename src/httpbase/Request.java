@@ -24,7 +24,7 @@ public class Request {
 	private ArrayList<String> headerList;
 	private byte[] body;
 	
-	Request(String httpservice,byte[] rawRequest) throws Exception{
+	public Request(String httpservice,byte[] rawRequest) throws Exception{
 		parser(httpservice,rawRequest);
 	}
 

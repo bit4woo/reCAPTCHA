@@ -14,7 +14,18 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -34,6 +45,7 @@ import javax.swing.border.LineBorder;
 import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
+import recon.IHandler;
 import recon.myGSA;
 import recon.myjsdati;
 
@@ -51,7 +63,7 @@ public class GUI extends JFrame {
 	private JSplitPane splitPane_1;
 	private JSplitPane splitPane_2;
 	public JTextArea imgRequestRaws;
-	public JTextArea APIRequestRaws;
+	public static JTextArea APIRequestRaws;
 	private JPanel panel;
 	private JPanel panel_1;
 	public JButton btnRequest;
@@ -264,78 +276,62 @@ public class GUI extends JFrame {
 		APIcomboBox = new JComboBox<String>();
 		APIcomboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				if (APIcomboBox.getSelectedItem().equals("GSA Captcha Breaker"))
-				{
-					APIRequestRaws.setText("http://127.0.0.1");
-					helpurl="https://www.gsa-online.de/gsa-docu/";
-				}
-				if (APIcomboBox.getSelectedItem().equals("https://www.jsdati.com"))
-				{
-					APIRequestRaws.setText("username=bit4woo&password=password&captchaType=1001");
-					helpurl = "https://www.jsdati.com/docs/price";
-				}
+				IHandler han = getHanlderInstance(APIcomboBox.getSelectedItem().toString());
+				APIRequestRaws.setText(han.getExampleUserInput());
+				helpurl = han.getHelpLink();
 			}
 		});
 		panel_4.add(APIcomboBox, BorderLayout.NORTH);
-		APIcomboBox.addItem("https://www.jsdati.com");
-		APIcomboBox.addItem("GSA Captcha Breaker");
+
+		for (String item:getHanlderNames()) {
+			APIcomboBox.addItem(item);
+		}
 
 		panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-		FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		contentPane.add(panel_2, BorderLayout.SOUTH);
+				panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
+				FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
+				flowLayout.setAlignment(FlowLayout.LEFT);
+				contentPane.add(panel_2, BorderLayout.SOUTH);
 
-		lblNewLabel_2 = new JLabel("    "+github);
-		lblNewLabel_2.setFont(new Font("ו", Font.BOLD, 12));
-		lblNewLabel_2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				try {
-					URI uri = new URI(github);
-					Desktop desktop = Desktop.getDesktop();
-					if(Desktop.isDesktopSupported()&&desktop.isSupported(Desktop.Action.BROWSE)){
-						desktop.browse(uri);
+				lblNewLabel_2 = new JLabel("    "+github);
+				lblNewLabel_2.setFont(new Font("ו", Font.BOLD, 12));
+				lblNewLabel_2.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						try {
+							URI uri = new URI(github);
+							Desktop desktop = Desktop.getDesktop();
+							if(Desktop.isDesktopSupported()&&desktop.isSupported(Desktop.Action.BROWSE)){
+								desktop.browse(uri);
+							}
+						} catch (Exception e2) {
+							//callbacks.printError(e2.getMessage());
+						}
+
 					}
-				} catch (Exception e2) {
-					//callbacks.printError(e2.getMessage());
-				}
-
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				lblNewLabel_2.setForeground(Color.BLUE);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				lblNewLabel_2.setForeground(Color.BLACK);
-			}
-		});
-		panel_2.add(lblNewLabel_2);
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						lblNewLabel_2.setForeground(Color.BLUE);
+					}
+					@Override
+					public void mouseExited(MouseEvent e) {
+						lblNewLabel_2.setForeground(Color.BLACK);
+					}
+				});
+				panel_2.add(lblNewLabel_2);
 	}
 
 
 	public String getAnswer(String imgpath) {
 		Object Method = this.APIcomboBox.getSelectedItem();
+		IHandler handler = getHanlderInstance(APIcomboBox.getSelectedItem().toString());
 		String result = "";
 		String proxyUrl = "";
 		if (GUI.rdbtnUseProxy.isSelected()) {
 			proxyUrl = GUI.proxyUrl.getText().trim();
 		}
 		if(!imgpath.equals("")) {
-			if (Method.equals("GSA Captcha Breaker"))
-			{	
-				String httpService = APIRequestRaws.getText();
-				result = myGSA.getCode(imgpath, httpService,proxyUrl);
-			}else if (Method.equals("https://www.jsdati.com")) 
-			{
-				String para = APIRequestRaws.getText();
-				try {
-					result = myjsdati.getCode(imgpath, para,proxyUrl);
-				} catch (Exception e) {
-					e.printStackTrace(BurpExtender.stderr);
-				}
-			}
+			result = handler.getImageText(imgpath, APIRequestRaws.getText());
 		} else {
 			result = "image path is null!";
 		}
@@ -381,5 +377,84 @@ public class GUI extends JFrame {
 				btnRequest.setEnabled(true);
 			}
 		}
+	}
+
+	public List<String> getHanlderNames () {
+		List<String> n = getClassNamesFromPackage("recon.");
+		List<String> handlers  = new ArrayList<String>();
+		for (String module : n) {
+			try {
+				Constructor<?> c = Class.forName("recon."+module).getConstructor();
+				IHandler cm = (IHandler) c.newInstance();
+				if (cm instanceof IHandler) {
+					handlers.add(module);
+				}
+			}catch(Exception e) {
+
+			}
+		}
+		return handlers;
+	}
+	
+	public IHandler getHanlderInstance (String handlerClassName) {
+		try {
+			Constructor<?> c = Class.forName("recon."+handlerClassName).getConstructor();
+			IHandler cm = (IHandler) c.newInstance();
+			return cm;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 从jar包中获取某个package中的类名称
+	 * @param packageName
+	 * @return
+	 */
+	public ArrayList<String> getClassNamesFromPackage(String packageName) {
+		ArrayList<String> names = new ArrayList<>();
+
+		try {
+			packageName = packageName.replace(".", "/");
+			URL packageURL = getClass().getClassLoader().getResource(packageName);
+			if (packageURL == null) {
+				return names;
+			}
+
+			if (packageURL.getProtocol().equals("jar")) {
+
+				String jarFileName = URLDecoder.decode(packageURL.getFile(), "UTF-8");
+				jarFileName = jarFileName.substring(5, jarFileName.indexOf("!"));
+				JarFile jf = new JarFile(jarFileName);
+				Enumeration<JarEntry> jarEntries = jf.entries();
+
+				while (jarEntries.hasMoreElements()) {
+					String entryName = jarEntries.nextElement().getName();
+					//callbacks.printError(entryName);
+					if (entryName.startsWith(packageName) && !entryName.replace(packageName, "").contains("/") && entryName.length() > packageName.length()) {
+						entryName = entryName.substring(packageName.length(), entryName.lastIndexOf('.'));
+						names.add(entryName.replace("/", ""));
+					}
+				}
+				jf.close();
+
+				// loop through files in classpath
+			} else {
+				File folder = new File(packageURL.getFile());//error here sometimes
+				File[] contents = folder.listFiles();
+				String entryName;
+				for (File actual : contents) {
+					entryName = actual.getCanonicalPath();
+					names.add(entryName);
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return names;
 	}
 }
