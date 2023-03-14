@@ -17,6 +17,11 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<excludes>
+						<!-- 编译时排除Deprecated包及下面的资源 -->
+						<exclude>**/Deprecated/**</exclude>
+						<exclude>**/test/**</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -28,7 +33,8 @@
 					<archive>
 						<manifest>
 							<addDefaultImplementationEntries>
-								true<!--to get Version from pom.xml -->
+								true
+								<!--to get Version from pom.xml -->
 							</addDefaultImplementationEntries>
 						</manifest>
 					</archive>
@@ -43,7 +49,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<!-- https://stackoverflow.com/questions/4509309/in-maven-how-can-i-include-non-java-src-files-in-the-same-place-in-the-output-ja -->
+				<!-- 打包后的路径在jar包的根目录 -->
+				<directory>script</directory> <!-- 路径 -->
+				<includes>
+					<include>*.py</include>
+					<include>*.js</include>
+				</includes>
+				<excludes>
+					<exclude>*.yaml</exclude>
+				</excludes>
+			</resource>
+		</resources>
 	</build>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/net.portswigger.burp.extender/burp-extender-api -->
@@ -52,33 +79,28 @@
 			<artifactId>burp-extender-api</artifactId>
 			<version>1.7.22</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20200518</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.11</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
 		<dependency>
 			<groupId>org.beanshell</groupId>
 			<artifactId>bsh</artifactId>
 			<version>2.0b5</version>
 		</dependency>
-		
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-exec</artifactId>
-		    <version>1.3</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-exec</artifactId>
+			<version>1.3</version>
 		</dependency>
-
 	</dependencies>
 </project>
