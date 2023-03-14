@@ -158,7 +158,7 @@ public class ImageHandler {
 
 	public static String downloadWithBurpMethod(IHttpService httpService,byte[] request) {
 
-		IBurpExtenderCallbacks callbacks = BurpExtender.getBurpCallbacks();
+		IBurpExtenderCallbacks callbacks = BurpExtender.getCallbacks();
 		IExtensionHelpers helpers = callbacks.getHelpers();
 	    IHttpRequestResponse message =  callbacks.makeHttpRequest(httpService,request);
 	    IResponseInfo response =  helpers.analyzeResponse(message.getResponse());

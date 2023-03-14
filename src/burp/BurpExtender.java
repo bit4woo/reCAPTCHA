@@ -12,7 +12,8 @@ import javax.swing.JMenuItem;
 import custom.GUI;
 import custom.ImageHandler;
 
-public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMenuFactory, IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator
+public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMenuFactory, 
+IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator,IExtensionStateListener
 {	
 	private static IBurpExtenderCallbacks callbacks;
 	private static IExtensionHelpers helpers;
@@ -20,9 +21,9 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	public static PrintWriter stdout;
 	public static PrintWriter stderr;
 
-	private static IHttpRequestResponse imgMessageInfo;
 	IMessageEditor imageMessageEditor;
-
+	public static Config config;
+	
 	@Override
 	public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks)
 	{
@@ -36,7 +37,10 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 		callbacks.registerContextMenuFactory(this);
 		callbacks.registerIntruderPayloadGeneratorFactory(this);
 		callbacks.addSuiteTab(BurpExtender.this);
+		config = Config.LoadConfigFromBurp();
 	}
+	
+	
 
 	private static void flushStd(){
 		try{
@@ -49,16 +53,8 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	}
 
 	/////////////////////////////////////////自定义函数/////////////////////////////////////////////////////////////
-	public static IBurpExtenderCallbacks getBurpCallbacks() {
+	public static IBurpExtenderCallbacks getCallbacks() {
 		return callbacks;
-	}
-
-	public static IHttpRequestResponse getImgMessageInfo() {
-		return imgMessageInfo;
-	}
-
-	public static void setImgMessageInfo(IHttpRequestResponse imgMessageInfo) {
-		BurpExtender.imgMessageInfo = imgMessageInfo;
 	}
 
 	public String getHost(IRequestInfo analyzeRequest){
@@ -72,13 +68,13 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 		return domain ;
 	}
 
-	public static String getImage(IHttpRequestResponse messageInfo) {
-		if (messageInfo == null) {
+	public static String getImage(Config config) {
+		if (config == null) {
 			return null;
 		}
 		try {
-			IHttpService service = messageInfo.getHttpService();
-			byte[] request =  messageInfo.getRequest();
+			IHttpService service = config.getHttpService();
+			byte[] request =  config.getRequestBytes();
 			if (GUI.rdbtnUseSelfApi.isSelected()) {
 				String proxy = GUI.proxyUrl.getText().trim();
 				return ImageHandler.download(service, request, proxy);
@@ -117,10 +113,13 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 		List<JMenuItem> list = new ArrayList<JMenuItem>();
 		if((messages != null) && (messages.length ==1))
 		{	
-			imgMessageInfo = messages[0];
-
-			final byte[] sentRequestBytes = messages[0].getRequest();
-			IRequestInfo analyzeRequest = helpers.analyzeRequest(sentRequestBytes);
+			IHttpRequestResponse imgMessageInfo = messages[0];
+			
+			config.setRequestBytes(imgMessageInfo.getRequest());
+			config.setHost(imgMessageInfo.getHttpService().getHost());
+			config.setPort(imgMessageInfo.getHttpService().getPort());
+			config.setProtocol(imgMessageInfo.getHttpService().getProtocol());
+			config.saveConfigToBurp();
 
 			JMenuItem menuItem = new JMenuItem("Send to reCAPTCHA");
 			menuItem.addActionListener(new ActionListener()
@@ -128,10 +127,8 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 				public void actionPerformed(ActionEvent e)
 				{
 					try
-					{
-						imgRequestRaws.setText(new String(imgMessageInfo.getRequest())); //在GUI中显示这个请求信息。
-						IHttpService httpservice =imgMessageInfo.getHttpService();
-						imgHttpService.setText(httpservice.toString());
+					{	
+						showMessage();
 					}
 					catch (Exception e1)
 					{
@@ -142,6 +139,11 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 			list.add(menuItem);
 		}
 		return list;
+	}
+	
+	public static void showMessage() {
+		imgRequestRaws.setText(new String(config.getRequestBytes())); //在GUI中显示这个请求信息。
+		imgHttpService.setText(config.getHttpService().toString());
 	}
 
 
@@ -169,10 +171,10 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 		// 获取图片验证码的值
 		int times = 0;
 		while(times <=5) {
-			if (imgMessageInfo!=null) {
+			if (config!=null) {
 				try {					
 					//String imgpath = imageDownloader.download(callbacks, helpers, imgMessageInfo.getHttpService(), imgMessageInfo.getRequest());
-					String imgpath = this.getImage(imgMessageInfo);
+					String imgpath = this.getImage(config);
 					String code = getAnswer(imgpath);
 					stdout.println(imgpath+" ---- "+code);
 					return code.getBytes();
@@ -192,6 +194,13 @@ public class BurpExtender extends GUI implements IBurpExtender, ITab, IContextMe
 	@Override
 	public void reset() {
 
+	}
+
+
+
+	@Override
+	public void extensionUnloaded() {
+		config.saveConfigToBurp();
 	}
 
 	//////////////////////////////////////////////各种burp必须的方法 --end//////////////////////////////////////////////////////////////

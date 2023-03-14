@@ -42,6 +42,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import burp.BurpExtender;
+import burp.Config;
 import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
 import recon.IHandler;
@@ -59,14 +60,14 @@ public class GUI extends JFrame {
 	private JSplitPane splitPane;
 	private JSplitPane splitPane_1;
 	private JSplitPane splitPane_2;
-	public JTextArea imgRequestRaws;
+	public static JTextArea imgRequestRaws;
 	public static JTextArea APIRequestRaws;
 	private JPanel panel;
 	private JPanel panel_1;
 	public JButton btnRequest;
 	private JButton btnRequestAPI;
 	private JLabel label_showimg;
-	public JTextField imgHttpService;
+	public static JTextField imgHttpService;
 
 	public IMessageEditor imageMessageEditor;
 	public static JRadioButton rdbtnUseSelfApi;
@@ -154,7 +155,7 @@ public class GUI extends JFrame {
 		panel_6.add(btnRequest);
 		btnRequest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GetImageThread thread = new GetImageThread(BurpExtender.getImgMessageInfo());
+				GetImageThread thread = new GetImageThread();
 				thread.start();
 				//btnRequest.setEnabled(true);
 				//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
@@ -349,17 +350,12 @@ public class GUI extends JFrame {
 	}
 
 	public class GetImageThread extends Thread {
-		private IHttpRequestResponse MessageInfo;
-
-		public GetImageThread(IHttpRequestResponse MessageInfo) {
-			this.MessageInfo = MessageInfo;
-		}
 		public void run() {
 			try {
 				//java.lang.RuntimeException: Extensions should not make HTTP requests in the Swing event dispatch thread
 				//https://support.portswigger.net/customer/portal/questions/16190306-burp-extensions-using-makehttprequest
 				btnRequest.setEnabled(false);
-				String imageName = BurpExtender.getImage(MessageInfo);
+				String imageName = BurpExtender.getImage(BurpExtender.config);
 				imgPath.setText(imageName);
 
 				//label_showimg.setIcon(new ImageIcon(imgpath));
