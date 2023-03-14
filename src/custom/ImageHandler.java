@@ -187,7 +187,7 @@ public class ImageHandler {
             //fops.flush();  
             fops.close();
 		    
-            return imgName;
+            return file.getAbsolutePath();
         } catch (Exception e) {  
             e.printStackTrace();
             return null;

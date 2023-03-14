@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -46,8 +45,6 @@ import burp.BurpExtender;
 import burp.IHttpRequestResponse;
 import burp.IMessageEditor;
 import recon.IHandler;
-import recon.myGSA;
-import recon.myjsdati;
 
 
 public class GUI extends JFrame {
@@ -323,7 +320,6 @@ public class GUI extends JFrame {
 
 
 	public String getAnswer(String imgpath) {
-		Object Method = this.APIcomboBox.getSelectedItem();
 		IHandler handler = getHanlderInstance(APIcomboBox.getSelectedItem().toString());
 		String result = "";
 		String proxyUrl = "";

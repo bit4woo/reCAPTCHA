@@ -7,3 +7,4 @@
 /target/
 /.settings/
 .fatjar
+*.pyc

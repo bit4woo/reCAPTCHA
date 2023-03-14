@@ -1,14 +1,20 @@
 package recon;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.json.JSONObject;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.PumpStreamHandler;
 
 public class LocalDdddocr implements IHandler{
 
-	public static String execute(String imagePath) throws Exception {
-		Runtime rt = Runtime.getRuntime();String[] commands = {"python","D:\\github\\PackageHanlder\\js\\AES-encry.js", imagePath};
+	@Deprecated
+	public static String execute11(String imagePath) throws Exception {
+		Runtime rt = Runtime.getRuntime();String[] commands = {"python","D:\\github\\reCAPTCHA\\script\\ddddocrHandler.py", imagePath};
 		Process proc = rt.exec(commands);
 
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
@@ -22,6 +28,21 @@ public class LocalDdddocr implements IHandler{
 		}
 		return null;
 	}
+	
+	public static String execute(String imagePath) 
+	  throws ExecuteException, IOException {
+	    String line = "python " + "D:\\github\\reCAPTCHA\\script\\ddddocrHandler.py "+imagePath;
+	    CommandLine cmdLine = CommandLine.parse(line);
+	        
+	    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	    PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+	        
+	    DefaultExecutor executor = new DefaultExecutor();
+	    executor.setStreamHandler(streamHandler);
+
+	    int exitCode = executor.execute(cmdLine);
+	    return outputStream.toString();
+	}
 
 
 	public static void test1() {
@@ -30,10 +51,12 @@ public class LocalDdddocr implements IHandler{
 
 	public static void main(String[] args) {
 
-		String body = "{\"loginName\":\"admin\",\"kaptcha\":\"d4mb\",\"password\":\"admin\",\"timeStamp\":1666428310974}";
-		JSONObject Json= new JSONObject(body);
-		Json.put("password", "xxxx");
-		System.out.println(Json.toString());
+		try {
+			System.out.println(execute("D:\\github\\reCAPTCHA\\script\\1111.jpg"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
@@ -44,7 +67,7 @@ public class LocalDdddocr implements IHandler{
 
 	@Override
 	public String getExampleUserInput() {
-		return "{\"python\",\"D:\\\\github\\\\PackageHanlder\\\\js\\\\AES-encry.js\", imagePath}";
+		return "python D:\\github\\reCAPTCHA\\script\\ddddocrHandler.py %s";
 	}
 
 	@Override
