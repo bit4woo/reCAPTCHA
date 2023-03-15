@@ -174,8 +174,8 @@ IIntruderPayloadGeneratorFactory,IIntruderPayloadGenerator,IExtensionStateListen
 			if (config!=null) {
 				try {					
 					//String imgpath = imageDownloader.download(callbacks, helpers, imgMessageInfo.getHttpService(), imgMessageInfo.getRequest());
-					String imgpath = this.getImage(config);
-					String code = getAnswer(imgpath);
+					String imgpath = BurpExtender.getImage(config);
+					String code = getAnswer(imgpath).trim();//验证码trim一下应该不会有问题
 					stdout.println(imgpath+" ---- "+code);
 					return code.getBytes();
 				} catch (Exception e) {

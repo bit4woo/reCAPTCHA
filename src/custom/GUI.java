@@ -327,10 +327,15 @@ public class GUI extends JFrame {
 		if (GUI.rdbtnUseProxy.isSelected()) {
 			proxyUrl = GUI.proxyUrl.getText().trim();
 		}
+		
 		if(!imgpath.equals("")) {
-			result = handler.getImageText(imgpath, APIRequestRaws.getText());
+			result = handler.getImageText(imgpath, APIRequestRaws.getText(),proxyUrl);
 		} else {
 			result = "image path is null!";
+		}
+		
+		if (result == null){
+			result = "null";
 		}
 		return result;
 	}

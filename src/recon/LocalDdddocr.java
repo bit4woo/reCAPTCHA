@@ -41,7 +41,7 @@ public class LocalDdddocr implements IHandler{
 	    executor.setStreamHandler(streamHandler);
 
 	    int exitCode = executor.execute(cmdLine);
-	    return outputStream.toString();
+	    return outputStream.toString().trim();//"\r\n"需要剔除
 	}
 
 
@@ -71,12 +71,12 @@ public class LocalDdddocr implements IHandler{
 	}
 
 	@Override
-	public String getImageText(String imagePath, String userInputFromGUI) {
+	public String getImageText(String imagePath, String userInputFromGUI,String proxyUrl) {
 		try {
 			return execute(imagePath);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return "";
 		}
 	}
 }

@@ -15,6 +15,6 @@ public interface IHandler {
 	/*
 	 * 获取图片上面的文本内容，即图形验证码的内容。
 	 */
-	public String getImageText(String imagePath,String userInputFromGUI);
+	public String getImageText(String imagePath,String userInputFromGUI,String proxyUrl);
 	
 }
