@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import burp.BurpExtender;
+import burp.HelperPlus;
 import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
@@ -165,9 +166,9 @@ public class ImageHandler {
 	    
 	    List<String> headers = response.getHeaders();
 	    
-	    int bodyOffset = response.getBodyOffset();
-	    int length = message.getResponse().length;
-	    byte[] byte_body = Arrays.copyOfRange(message.getResponse(), bodyOffset, length-1);
+	    HelperPlus getter = new HelperPlus(helpers);
+	    
+	    byte[] byte_body =getter.getBody(false, message);
 		
 	    String fileType = getPicTypeByHeader(headers);
     	if (fileType == null) {
