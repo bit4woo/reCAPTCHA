@@ -29,11 +29,6 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
-    # Create environment file to disable zip packaging
-    - name: Disable Zip Packaging
-      run: echo 'ZIP_COMMAND=false' >> $GITHUB_ENV
-      if: always()
       
     - name: Upload Jar file
       uses: actions/upload-artifact@v2
