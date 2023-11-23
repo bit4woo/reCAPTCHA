@@ -6,5 +6,6 @@
 /bin/
 /target/
 /.settings/
+/.idea/
 .fatjar
 *.pyc
